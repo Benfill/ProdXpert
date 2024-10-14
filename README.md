@@ -1,18 +1,18 @@
-# OrderMaster - Online Order Management Application
+# ProdXpert - Online Order Management Application
 
 ## Overview
 
-OrderMaster is a powerful and secure web application designed to elevate your business's online order management. It provides a seamless experience for both customers and administrators, making the process of managing products, users, and orders more efficient and accessible. With a modern user interface powered by Thymeleaf and robust role-based authentication, OrderMaster ensures that businesses can handle their online operations with ease and confidence.
+ProdXpert is a powerful and secure web application designed to elevate your business's online order management. It provides a seamless experience for both customers and administrators, making the process of managing products, users, and orders more efficient and accessible. With a modern user interface powered by Thymeleaf and robust role-based authentication, ProdXpert ensures that businesses can handle their online operations with ease and confidence.
 
 ## Key Features
 
 ### 1. Secure User Authentication
-OrderMaster guarantees the security of user data through session-based authentication. Users are categorized into two roles:
+ProdXpert guarantees the security of user data through session-based authentication. Users are categorized into two roles:
 - **Admins**: Full control over the system's products, users, and order management features.
 - **Clients**: Access to browse products, place orders, and manage their personal orders.
 
 ### 2. Dynamic and User-Friendly Interface
-Built with **Thymeleaf**, OrderMaster offers a dynamic and responsive user interface. The platform replaces traditional technologies like JSP with a more modern approach to view rendering, ensuring a smoother and more intuitive navigation experience across devices.
+Built with **Thymeleaf**, ProdXpert offers a dynamic and responsive user interface. The platform replaces traditional technologies like JSP with a more modern approach to view rendering, ensuring a smoother and more intuitive navigation experience across devices.
 
 ### 3. Product Management for Admins
 Administrators have exclusive access to manage the product catalog:
@@ -20,7 +20,7 @@ Administrators have exclusive access to manage the product catalog:
 - Search and filter products with pagination to make navigation efficient, even with large inventories.
 
 ### 4. Order Management for Admins and Clients
-OrderMaster provides an extensive order management system:
+ProdXpert provides an extensive order management system:
 - **For Clients**:
     - Place new orders quickly and easily.
     - Modify or cancel orders that are still in "Pending" or "Processing" status.
@@ -36,7 +36,7 @@ Administrators can manage both client and admin accounts:
 - Create, update, and delete user accounts as needed, maintaining full control over system access.
 
 ### 6. Layered Architecture for Maintainability
-OrderMaster is designed with a **Model-View-Controller (MVC)** architecture. This clean separation between the data layer, business logic, and presentation ensures that the application is easy to maintain, scale, and extend as your business grows.
+ProdXpert is designed with a **Model-View-Controller (MVC)** architecture. This clean separation between the data layer, business logic, and presentation ensures that the application is easy to maintain, scale, and extend as your business grows.
 
 ### 7. Comprehensive Testing
 The application is thoroughly tested using **JUnit** and **Mockito**, ensuring the reliability of both the business logic and data access components. This focus on testing helps prevent bugs and guarantees a smooth experience for end users.
