@@ -1,0 +1,14 @@
+<header th:fragment="header" id="header" class="fixed w-full z-10 lg:px-8 transition-all bg-transparent">
+  <div class="container mx-auto flex items-center justify-between w-full py-6" >
+      <div class="w-[40px]">
+          <a>
+              <img th:src="@{/resources/images/icons8-cart-64.png}" />
+          </a>
+      </div>
+
+      <div class="cursor-pointer flex relative">
+          <img th:src="@{/resources/images/icons8-cart-64.png}" />
+          <span class="bg-red-500 absolute -right-2 -bottom-2 text-[12px] w-[18px] h-[18px] text-white rounded-full flex justify-center items-center">2</span>
+      </div>
+  </div>
+</header>
