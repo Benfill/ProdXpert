@@ -50,10 +50,8 @@ public class AuthServlet extends HttpServlet {
 
         if ("/login".equals(path)) {
             templateEngine.process("auth/login", ctx, res.getWriter());
-            return;
         } else if ("/register".equals(path)) {
             templateEngine.process("auth/register", ctx, res.getWriter());
-            return;
         }
 
     }
@@ -75,9 +73,6 @@ public class AuthServlet extends HttpServlet {
         String secondName = req.getParameter("secondName");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-        LocalDate birthday = LocalDate.parse(req.getParameter("birthDate"), format);
         UserRole role = null;
 
 
@@ -85,7 +80,7 @@ public class AuthServlet extends HttpServlet {
             ctx.setVariable("error", "User already exist");
         } else {
             role = userService.isFirst() ? UserRole.ADMIN : UserRole.CLIENT;
-            User user = new User(firstName, secondName, email, PasswordUtil.hashPassword(password), birthday, role);
+            User user = new User(firstName, secondName, email, PasswordUtil.hashPassword(password), role);
             UserModel creation = userService.create(user);
             if (creation.successful()){
                 authUser(req, res, user); return;

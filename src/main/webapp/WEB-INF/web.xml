@@ -53,6 +53,10 @@
 	</servlet-mapping>
 	<!-- end home -->
 
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources/js/*</url-pattern>
+	</servlet-mapping>
 
 	<!-- Serve static resources from /uploads -->
 	<servlet-mapping>
