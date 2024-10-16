@@ -14,7 +14,7 @@ public class HibernateUtil {
 	private static SessionFactory buildSessionFactory() {
 		try {
 			// Load environment variables from .env file
-			Dotenv dotenv = Dotenv.configure().directory("").load();
+			Dotenv dotenv = Dotenv.configure().directory("C:\\Users\\youcode\\Desktop\\ProdXpert\\.env").load();
 
 			String driver = dotenv.get("DB_DRIVER", "org.postgresql.Driver");
 			String url = dotenv.get("DB_URL", "jdbc:postgresql://localhost:5432/blogify");

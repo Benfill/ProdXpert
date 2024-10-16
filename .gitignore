@@ -49,3 +49,4 @@ workingSet.*
 push.sh
 src/main/java/utils/DatabaseConnection.java
 src/main/java/utils/DatabaseConnection.java
+/target/

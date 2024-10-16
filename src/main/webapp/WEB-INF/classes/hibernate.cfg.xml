@@ -28,6 +28,7 @@
 
         <!-- Entity mappings -->
         <mapping class="entity.User"/>
+        <mapping class="entity.Product"/>
         
     </session-factory>
 </hibernate-configuration>

@@ -53,11 +53,24 @@
 	</servlet-mapping>
 	<!-- end home -->
 
+	<servlet>
+		<servlet-name>ProductServlet</servlet-name>
+		<servlet-class>controller.ProductServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProductServlet</servlet-name>
+		<url-pattern>/product/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resources/js/*</url-pattern>
+    </servlet-mapping>
 
 	<!-- Serve static resources from /uploads -->
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
-		<url-pattern>/uploads/*</url-pattern>
+		<url-pattern>/pictures/*</url-pattern>
 	</servlet-mapping>
 
 
