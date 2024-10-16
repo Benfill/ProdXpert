@@ -14,30 +14,30 @@ import java.io.IOException;
 
 
 public class UserServlet extends HttpServlet {
-	private TemplateEngine templateEngine;
+    private TemplateEngine templateEngine;
 
     public void init() throws ServletException {
 
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(this.getServletContext());
-		templateResolver.setPrefix("/WEB-INF/templates/");
-		templateResolver.setSuffix(".html");
-		templateResolver.setTemplateMode("HTML");
-		templateResolver.setCharacterEncoding("UTF-8");
+        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(this.getServletContext());
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
 
-		// Initialize the template engine
-		templateEngine = new TemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver);
+        // Initialize the template engine
+        templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
     }
 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         // Create the Thymeleaf context
-		   WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-		   ctx.setVariable("message", "Hello from Thymeleaf in JEE!");
-		   templateEngine.process("index", ctx, response.getWriter());
+        // Create the Thymeleaf context
+        WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+        ctx.setVariable("message", "Hello from Thymeleaf in JEE!");
+        templateEngine.process("index", ctx, response.getWriter());
 
 
     }
-   
+
 }

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
 
-	<display-name>blogify</display-name>
+	<display-name>prodXpert</display-name>
 
 
 
@@ -20,7 +20,39 @@
 	</servlet-mapping>
 	<!-- User Mapping End -->
 
-	
+<!--	auth -->
+	<servlet>
+		<servlet-name>Auth</servlet-name>
+		<servlet-class>controller.AuthServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/register</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/demo</url-pattern>
+	</servlet-mapping>
+
+	<!-- home -->
+	<servlet>
+		<servlet-name>Home</servlet-name>
+		<servlet-class>controller.HomeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Home</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping> <!-- use to render 404 (not found) page -->
+		<servlet-name>Home</servlet-name>
+		<url-pattern>/404</url-pattern>
+	</servlet-mapping>
+	<!-- end home -->
+
 
 	<!-- Serve static resources from /uploads -->
 	<servlet-mapping>
@@ -29,5 +61,4 @@
 	</servlet-mapping>
 
 
-	
 </web-app>
