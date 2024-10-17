@@ -3,22 +3,41 @@
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
-
-	<display-name>prodXpert</display-name>
-
+    <display-name>prodXpert</display-name>
 
 
+    <!-- Servlet for Thymeleaf -->
+    <servlet>
+        <servlet-name>ThymeleafServlet</servlet-name>
+        <servlet-class>controller.HomeServlet</servlet-class>
+    </servlet>
 
- 	<!-- User Mapping -->
-	<servlet>
-		<servlet-name>UserServlet</servlet-name>
-		<servlet-class>controller.UserServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>UserServlet</servlet-name>
-		<url-pattern>/user</url-pattern>
-	</servlet-mapping>
-	<!-- User Mapping End -->
+    <servlet-mapping>
+        <servlet-name>ThymeleafServlet</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+
+	 	<!-- User Mapping -->
+		 <servlet>
+			<servlet-name>UserServlet</servlet-name>
+			<servlet-class>controller.UserServlet</servlet-class>
+		</servlet>
+		<servlet-mapping>
+			<servlet-name>UserServlet</servlet-name>
+			<url-pattern>/user</url-pattern>
+		</servlet-mapping>
+		<!-- User Mapping End -->
+
+    	<!-- Order Mapping -->
+		 <servlet>
+			<servlet-name>OrderServlet</servlet-name>
+			<servlet-class>controller.OrderServlet</servlet-class>
+		</servlet>
+		<servlet-mapping>
+			<servlet-name>OrderServlet</servlet-name>
+			<url-pattern>/order</url-pattern>
+		</servlet-mapping>
+		<!-- Order Mapping End -->
 
 <!--	auth -->
 	<servlet>
@@ -57,12 +76,18 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>/resources/js/*</url-pattern>
 	</servlet-mapping>
+    <!-- Serve static resources from /resources -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
 
-	<!-- Serve static resources from /uploads -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/uploads/*</url-pattern>
-	</servlet-mapping>
+    <!-- Serve static resources from /uploads (if needed) -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/uploads/*</url-pattern>
+    </servlet-mapping>
+
 
 
 </web-app>
