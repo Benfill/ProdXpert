@@ -47,14 +47,19 @@
 	<servlet-mapping>
 		<servlet-name>Auth</servlet-name>
 		<url-pattern>/login</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>Auth</servlet-name>
 		<url-pattern>/register</url-pattern>
+		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
+	
+	<!-- users -->
+	<servlet>
+		<servlet-name>User</servlet-name>
+		<servlet-class>controller.UserServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
-		<servlet-name>Auth</servlet-name>
-		<url-pattern>/demo</url-pattern>
+		<servlet-name>User</servlet-name>
+		<url-pattern>/dashboard</url-pattern>
+		<url-pattern>/dashboard/users/create</url-pattern>
 	</servlet-mapping>
 
 	<!-- home -->

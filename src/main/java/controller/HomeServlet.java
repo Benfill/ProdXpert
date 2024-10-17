@@ -54,6 +54,11 @@ public class HomeServlet extends HttpServlet {
 		ctx.setVariable("title", "Products");
 		ctx.setVariable("products", products);
 
+		if (!request.getServletPath().equals("/")) {
+			templateEngine.process("404", ctx, response.getWriter());
+			return;
+		}
+
 		ctx.setVariable("message", "Hello from Thymeleaf in JEE!");
 		templateEngine.process("pages/index", ctx, response.getWriter());
 

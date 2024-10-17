@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+
 
 public class AuthServlet extends HttpServlet {
     private TemplateEngine templateEngine;
@@ -44,7 +42,7 @@ public class AuthServlet extends HttpServlet {
         String path = req.getServletPath();
 
         if (checkAuth(req)){ // redirect home if authenticated
-            res.sendRedirect("/prodXpert/");
+            res.sendRedirect(req.getContextPath());
             return;
         }
 
@@ -65,6 +63,8 @@ public class AuthServlet extends HttpServlet {
             login(req, res, ctx);
         } else if ("/register".equals(path)) {
             register(req, res, ctx);
+        } else if ("/logout".equals(path)){
+            logout(req, res);
         }
     }
 
@@ -106,11 +106,18 @@ public class AuthServlet extends HttpServlet {
     private void authUser(HttpServletRequest req, HttpServletResponse res, User user) throws IOException { // authenticates user
         HttpSession session = req.getSession();
         session.setAttribute("authUser",user);
-        res.sendRedirect("/prodXpert/");
+        res.sendRedirect(req.getContextPath());
     }
 
     private boolean checkAuth(HttpServletRequest req) { // check authentication
         HttpSession session = req.getSession();
         return session != null && session.getAttribute("authUser") != null;
     }
+    private void logout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		HttpSession session = req.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+		res.sendRedirect(req.getContextPath());
+	}
 }
