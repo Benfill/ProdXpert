@@ -29,9 +29,6 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "birth_date", nullable = false)
-	private LocalDate birthDate;
-
 	@Column(nullable = false)
 	private String password;
 
@@ -43,24 +40,22 @@ public class User {
 
 	}
 
-	public User(String firstName, String secondName, String email, String password, LocalDate birthDate, UserRole role) {
+	public User(String firstName, String secondName, String email, String password, UserRole role) {
 		this.firstName = firstName;
 		this.secondName = secondName;
 		this.email = email;
 		this.password = password;
-		this.birthDate = birthDate;
 		this.role = role;
 
 	}
 
-	public User(Long id, String firstName, String secondName, String email, String password, LocalDate birthDate,
+	public User(Long id, String firstName, String secondName, String email, String password,
 			UserRole role) {
 		this.id = id;
 		this.firstName = firstName;
 		this.secondName = secondName;
 		this.email = email;
 		this.password = password;
-		this.birthDate = birthDate;
 		this.role = role;
 	}
 
@@ -94,14 +89,6 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
 	}
 
 	public UserRole getRole() {

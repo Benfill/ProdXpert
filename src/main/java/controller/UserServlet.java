@@ -1,50 +1,40 @@
 package controller;
 
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import utils.ThymeleafConfig;
-
-import java.io.IOException;
-
-
 public class UserServlet extends HttpServlet {
 	private TemplateEngine templateEngine;
-    private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
-    public void init() throws ServletException {
-        templateEngine = ThymeleafConfig.getTemplateEngine(getServletContext());
-    }
+	public void init() throws ServletException {
 
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(this.getServletContext());
+		templateResolver.setPrefix("/WEB-INF/templates/");
+		templateResolver.setSuffix(".html");
+		templateResolver.setTemplateMode("HTML");
+		templateResolver.setCharacterEncoding("UTF-8");
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		// Initialize the template engine
+		templateEngine = new TemplateEngine();
+		templateEngine.setTemplateResolver(templateResolver);
+	}
 
-           try {
-             // Create the Thymeleaf context
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Create the Thymeleaf context
+		WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+		ctx.setVariable("message", "Hello from Thymeleaf in JEE!");
+		templateEngine.process("index", ctx, response.getWriter());
 
-            WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
-            context.setVariable("title", "users");
-            context.setVariable("message", "Welcome to ProdXpert!");
+	}
 
-            response.setContentType("text/html;charset=UTF-8");
-            templateEngine.process("pages/index", context, response.getWriter());
-        } catch (Exception e) {
-            logger.error("Error processing home template", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An internal error occurred.");
-        }
-
-
-    }
-   
 }

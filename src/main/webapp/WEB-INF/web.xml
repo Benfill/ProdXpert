@@ -5,10 +5,6 @@
 	id="WebApp_ID" version="2.5">
     <display-name>prodXpert</display-name>
 
-    <!-- Welcome File Configuration -->
-    <welcome-file-list>
-        <welcome-file>index</welcome-file> <!-- Points to the servlet handling 'index' -->
-    </welcome-file-list>
 
     <!-- Servlet for Thymeleaf -->
     <servlet>
@@ -43,6 +39,43 @@
 		</servlet-mapping>
 		<!-- Order Mapping End -->
 
+<!--	auth -->
+	<servlet>
+		<servlet-name>Auth</servlet-name>
+		<servlet-class>controller.AuthServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/register</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Auth</servlet-name>
+		<url-pattern>/demo</url-pattern>
+	</servlet-mapping>
+
+	<!-- home -->
+	<servlet>
+		<servlet-name>Home</servlet-name>
+		<servlet-class>controller.HomeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Home</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping> <!-- use to render 404 (not found) page -->
+		<servlet-name>Home</servlet-name>
+		<url-pattern>/404</url-pattern>
+	</servlet-mapping>
+	<!-- end home -->
+
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources/js/*</url-pattern>
+	</servlet-mapping>
     <!-- Serve static resources from /resources -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>
@@ -54,5 +87,7 @@
         <servlet-name>default</servlet-name>
         <url-pattern>/uploads/*</url-pattern>
     </servlet-mapping>
+
+
 
 </web-app>
