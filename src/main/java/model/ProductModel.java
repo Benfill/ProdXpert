@@ -8,7 +8,9 @@ public class ProductModel {
 	private ProductDto product;
 	private String errorMessage;
 	private String successMessage;
-	private long productCount;
+	private long productTotal;
+	private int page;
+	private int totalPages;
 
 	public List<ProductDto> getProducts() {
 		return products;
@@ -42,12 +44,28 @@ public class ProductModel {
 		this.successMessage = successMessage;
 	}
 
-	public long getProductCount() {
-		return productCount;
+	public long getProductTotal() {
+		return productTotal;
 	}
 
-	public void setProductCount(long productCount) {
-		this.productCount = productCount;
+	public void setProductTotal(long productTotal) {
+		this.productTotal = productTotal;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getTotalPages() {
+		return totalPages;
+	}
+
+	public void setTotalPages(int totalPages) {
+		this.totalPages = totalPages;
 	}
 
 }

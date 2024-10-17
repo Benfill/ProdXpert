@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class ProductServlet extends HttpServlet {
 	private ProductModel model;
 
 	private final Logger logger = Logger.getLogger(ProductServlet.class.getName());
-	private static final String UPLOAD_DIRECTORY = "pictures";
+	private static final String UPLOAD_DIRECTORY = "uploads";
 
 	@Override
 	public void init() throws ServletException {
@@ -69,17 +70,17 @@ public class ProductServlet extends HttpServlet {
 			action = path.substring(1, path.length());
 
 		switch (action) {
-		case "detail":
+		case "details":
 			show(req, resp);
 			break;
 		case "admin":
-			index(req, resp, "admin");
+			index(req, resp, "product/index");
 			break;
 		case "search":
-			search(req, resp, "product/index");
+			search(req, resp, "index");
 			break;
 		default:
-			index(req, resp, "product/index");
+			index(req, resp, "index");
 			break;
 		}
 
@@ -97,15 +98,20 @@ public class ProductServlet extends HttpServlet {
 
 		try {
 			dtos = productService.getAllProducts(pageParam, length);
+			long total = productService.count();
+			int totalPages = (int) Math.ceil((double) total / 5);
 
 			model.setProducts(dtos);
 			model.setSuccessMessage("The products have been successfully retrieved");
-			model.setProductCount(productService.count());
+			model.setProductTotal(total);
+			model.setPage(Integer.parseInt(pageParam));
+			model.setTotalPages(totalPages);
 		} catch (Exception e) {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 		}
-		returnView(req, resp, view, model);
+		String path = "pages/" + view;
+		returnView(req, resp, path, model);
 	}
 
 	private void show(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -115,10 +121,13 @@ public class ProductServlet extends HttpServlet {
 			ProductDto dto = productService.getProductById(idParam);
 			model.setProduct(dto);
 			model.setSuccessMessage("The product have been successfully retrieved");
+			returnView(req, resp, "pages/product/details", model);
 		} catch (Exception e) {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
+			resp.sendRedirect(req.getContextPath() + "/product");
 		}
+
 	}
 
 	private void store(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -127,28 +136,33 @@ public class ProductServlet extends HttpServlet {
 		String description = req.getParameter("description");
 		String price = req.getParameter("price");
 		String stock = req.getParameter("stock");
-		Part filePart = req.getPart("picture"); // Retrieves <input type="file" name="picture">
+		String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
 
+		// Ensure the directory exists
+		File uploadDir = new File(uploadPath);
+		if (!uploadDir.exists()) {
+			uploadDir.mkdirs(); // Use mkdirs to create necessary parent directories if they don't exist
+		}
+
+		// Get the uploaded file
+		Part filePart = req.getPart("picture");
 		if (filePart == null) {
 			model.setErrorMessage("File part is missing.");
 			logger.warning("File part is missing.");
 			return;
 		}
 
-		String fileName = filePart.getSubmittedFileName();
-
-		String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
-		File uploadDir = new File(uploadPath);
-		if (!uploadDir.exists()) {
-			uploadDir.mkdir();
-		}
-
-		// Write the file to the target directory
+		// Save the file with its original name
+		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Extract file name
 		String filePath = uploadPath + File.separator + fileName;
-		filePart.write(filePath);
+		filePart.write(filePath); // Write the file to the disk
+
+		// Store relative URL in the database (this is critical for cross-platform
+		// support)
+		String fileUrl = "/" + UPLOAD_DIRECTORY + "/" + fileName;
 
 		try {
-			productService.createProduct(name, description, price, stock, filePath);
+			productService.createProduct(name, description, price, stock, fileUrl);
 			model.setSuccessMessage("The product have been successfully created");
 			logger.info("The product have been successfully created");
 		} catch (Exception e) {
@@ -195,7 +209,7 @@ public class ProductServlet extends HttpServlet {
 		model = new ProductModel();
 		String name = req.getParameter("q");
 		String pageParam = req.getParameter("page");
-		String length = "5";
+		String length = "6";
 
 		if (pageParam == null)
 			pageParam = "1";
@@ -203,15 +217,21 @@ public class ProductServlet extends HttpServlet {
 		try {
 			dtos = productService.searchByName(name, pageParam, length);
 
+			long total = productService.count();
+			int totalPages = (int) Math.ceil((double) total / 6);
+
 			model.setProducts(dtos);
 			model.setSuccessMessage("The products have been successfully retrieved");
-			model.setProductCount(productService.count());
+			model.setProductTotal(total);
+			model.setPage(Integer.parseInt(pageParam));
+			model.setTotalPages(totalPages);
 		} catch (Exception e) {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 			resp.sendRedirect(req.getContextPath() + "/product");
 		}
-		returnView(req, resp, view, model);
+		String path = "pages/" + view;
+		returnView(req, resp, path, model);
 	}
 
 	private void returnView(HttpServletRequest req, HttpServletResponse resp, String view, ProductModel model) {
