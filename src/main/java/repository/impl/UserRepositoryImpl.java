@@ -57,9 +57,7 @@ public class UserRepositoryImpl implements IUserRepository {
             }
             e.printStackTrace();
             model.setSuccess(false);
-            model.setMessage(e.getMessage());
-        } finally {
-            s.close();
+            model.setMessage("Failed to create user.");
         }
         return model;
     }

@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Thymeleaf in JEE</title>
+    <title>Home</title>
 </head>
 <body>
-    <h1 th:text="${message}">Default Message</h1>
-    <h1>hello World!</h1>
+
+
+    <!--header-->
+    <div th:replace="fragments/header :: header" ></div>
+
+    <div>hi</div>
+
+    <!--footer-->
+    <div th:replace="fragments/footer :: footer"></div>
+
+
 </body>
 </html>
