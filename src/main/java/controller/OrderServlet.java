@@ -87,6 +87,18 @@ public class OrderServlet extends HttpServlet {
                                 e.printStackTrace(); // Log the exception for debugging
                                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
                             }
+                        }else if("checkout".equalsIgnoreCase(action)){
+                            try {
+                                WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+                                // context.setVariable("title", "Products");
+                            
+                                // Process the template and write to response
+                                response.setContentType("text/html;charset=UTF-8");
+                                templateEngine.process("pages/order/checkout", context, response.getWriter());
+                            } catch (Exception e) {
+                                e.printStackTrace(); // Log the exception for debugging
+                                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+                            }
                         }
                     }
                     else {
