@@ -5,7 +5,6 @@ import model.UserModel;
 import repository.impl.UserRepositoryImpl;
 import service.IUserService;
 
-import java.util.Collections;
 import java.util.List;
 
 public class UserServiceImpl implements IUserService {

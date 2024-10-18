@@ -1,13 +1,21 @@
 package entity;
 
-import enums.UserRole;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
-import java.time.LocalDate;
-
+@Entity
+@DiscriminatorValue("ADMIN")
 public class Admin extends User {
-    private String permission;
+    private int accessLevel;
 
-    public Admin(String firstName, String secondName, String email, String password) {
-        super(firstName, secondName, email, password, UserRole.ADMIN);
+    public Admin(){
+        super();
     }
+    public Admin(String fName, String sName, String email, String pwd, int accessLevel) {
+        super(fName, sName, email, pwd);
+        this.accessLevel = accessLevel;
+    }
+
+    public void setAccessLevel(int accessLevel){ this.accessLevel = accessLevel; }
+    public int getAccessLevel(){ return this.accessLevel; }
 }

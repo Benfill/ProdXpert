@@ -29,9 +29,8 @@
 					class="mb-4 flex justify-between items-center space-x-4 sm:space-x-0 md:mb-8">
 					<div>
 						<h2
-							class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
+							class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Products</h2>
 					</div>
-
 					<div
 						class="flex px-2 py-2 rounded-md gap-6 overflow-hidden max-w-md w-full sm:w-auto justify-end">
 						<input type="text" placeholder="Search Something..." name="q"
@@ -47,7 +46,6 @@
 					</div>
 				</form>
 
-
 				<!-- Parent container for all products -->
 				<div
 					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -57,6 +55,7 @@
 							th:replace="~{fragments/productCard :: productCard(${product})}"></div>
 					</div>
 				</div>
+					<h2 th:if="${model.products.isEmpty}" class="text-red-800 text-center">There is no data to display</h2>
 
 				<div th:if="${model.totalPages > 1}">
 					<nav aria-label="Page navigation example pb-20"

@@ -1,6 +1,9 @@
 package repository.impl;
 
+import entity.Admin;
+import entity.Client;
 import entity.User;
+import enums.UserRole;
 import model.UserModel;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -25,17 +28,16 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public List<User> getAll() {
-        Transaction transaction = null;
+        // Transaction transaction = null;
         List<User> users = null;
         try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = s.beginTransaction();
-            Query<User> query = s.createQuery("FROM User", User.class);
-            users = query.list();
-            transaction.commit();
+            // transaction = s.beginTransaction();
+            users = s.createQuery("select u FROM User u", User.class).getResultList();
+            // transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            // if (transaction != null) {
+            //     transaction.rollback();
+            // }
             e.printStackTrace();
         }
         return users;
@@ -47,7 +49,7 @@ public class UserRepositoryImpl implements IUserRepository {
         Session s = sessionFactory.openSession();
         try {
             t = s.beginTransaction();
-            s.save(user);
+            s.save(user instanceof Admin ? (Admin) user : (Client) user);
             t.commit();
             model.setSuccess(true);
             model.setMessage("User created successfully.");
@@ -74,23 +76,24 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public User findByEmail(String email) {
-        Transaction t = null;
         User user = null;
-
+    
         try (Session s = sessionFactory.openSession()) {
-            t = s.beginTransaction();
-            Query<User> query = s.createQuery("from User where email = :email", User.class);
-            query.setParameter("email", email);
-            user = query.uniqueResult();
-            t.commit();
+            user = s.createQuery("from User where email = :email", User.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+                    logger.error("the EMAIL to SEARCH with : " + email);
+                    logger.error("the user FOUND : ", user);
+                    logger.error("the user FIRST NAME : ", user.getFirstName());
+                    
         } catch (Exception e) {
-            if (t != null) {
-                t.rollback();
-            }
             e.printStackTrace();
+            logger.error("ERROR FINDING USER : ", e);
         }
+    
         return user;
     }
+    
 
     @Override
     public User findById(int id) {
