@@ -8,7 +8,8 @@ function register(event, self) {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const confirmPassword = document.getElementById('confirm_password').value.trim();
-    const terms = document.getElementById('terms').checked;
+    const terms = document.getElementById('terms');
+    const role = document.getElementById('role');
 
     const errorMessages = document.querySelectorAll('.error-message');
     errorMessages.forEach((error) => error.remove());
@@ -43,9 +44,33 @@ function register(event, self) {
         valid = false;
     }
 
-    if (!terms) {
+    if (terms != null && !terms.checked) {
         showError('terms', 'You must accept the Terms and Conditions.');
         valid = false;
+    }
+
+    if(role != null){
+        if(role.value == "ADMIN"){
+            const accessLevel = document.getElementById('accessLevel').value.trim();
+            if(accessLevel === "" || accessLevel == 0){
+                showError("accessLevel", "Access Level is required.")
+                valid = false;    
+            } else if(accessLevel != 1 && accessLevel != 2){
+                showError("accessLevel", "Access Level must be one of the numbers 1 or 2.")
+                valid = false;
+            }
+        } else if (role.value == "CLIENT"){
+            const deliveryAddress = document.getElementById("deliveryAddress").value.trim();
+            const paymentMethod = document.getElementById("paymentMethod").value.trim();
+            if(deliveryAddress === ""){
+                showError("deliveryAddress", "Delivery Address is required.");
+                valid = false;
+            }
+            if(paymentMethod === ""){
+                showError("paymentMethod", "Payment Method is required.");
+                valid = false;
+            }
+        }
     }
 
     if (valid) {

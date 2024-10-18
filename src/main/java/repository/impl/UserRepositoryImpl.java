@@ -1,6 +1,9 @@
 package repository.impl;
 
+import entity.Admin;
+import entity.Client;
 import entity.User;
+import enums.UserRole;
 import model.UserModel;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -47,7 +50,8 @@ public class UserRepositoryImpl implements IUserRepository {
         Session s = sessionFactory.openSession();
         try {
             t = s.beginTransaction();
-            s.save(user);
+            // s.save(user.getRole().equals(UserRole.ADMIN) ? (Admin) user : (Client) user);
+            s.save((Admin) user);
             t.commit();
             model.setSuccess(true);
             model.setMessage("User created successfully.");
@@ -74,20 +78,18 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public User findByEmail(String email) {
-        Transaction t = null;
+        Session s = sessionFactory.openSession();
         User user = null;
 
-        try (Session s = sessionFactory.openSession()) {
-            t = s.beginTransaction();
-            Query<User> query = s.createQuery("from User where email = :email", User.class);
-            query.setParameter("email", email);
-            user = query.uniqueResult();
-            t.commit();
+        try {
+            user = (User) s.createQuery("from User where email = :email")
+                .setParameter("email", email)
+                .uniqueResult();
+ 
         } catch (Exception e) {
-            if (t != null) {
-                t.rollback();
-            }
             e.printStackTrace();
+        } finally {
+            s.close();
         }
         return user;
     }

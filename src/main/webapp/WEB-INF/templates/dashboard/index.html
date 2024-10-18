@@ -237,11 +237,11 @@
                                     <tbody>
                                         
                                         <tr th:each="user : ${users}" class="border-b dark:border-gray-700">
-                                            <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">Apple iMac 27&#34;</th>
-                                            <td class="px-4 py-3">PC</td>
-                                            <td class="px-4 py-3">Apple</td>
-                                            <td class="px-4 py-3 max-w-[12rem] truncate">What is a product description? A product description describes a product.</td>
-                                            <td class="px-4 py-3">$2999</td>
+                                            <th th:text="${user.id}" scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"></th>
+                                            <td th:text="${user.firstName}" class="px-4 py-3"></td>
+                                            <td th:text="${user.secondName}" class="px-4 py-3"></td>
+                                            <td th:text="${user.email}" class="px-4 py-3 max-w-[12rem] truncate"></td>
+                                            <td th:text="${user.role}" class="px-4 py-3"></td>
                                             <td class="px-4 py-3 flex items-center justify-end">
                                                 <!-- Button for showing the menu -->
                                                 <button th:attr="data-clicked-user-id=${user.id}" class="inline-flex items-center text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 dark:hover-bg-gray-800 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
@@ -252,7 +252,7 @@
                                                 </button>
                                                 
                                                 <!-- Menu for each user -->
-                                                <div th:id="'clicked-user-id-menu-' + ${user.id}" class="absolute hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                                <div th:id="'clicked-user-id-menu-' + ${user.id}" class="litt-user-action-menu absolute hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                                     <ul class="py-1 text-sm">
                                                         <li>
                                                             <button type="button" data-modal-target="updateProductModal" data-modal-toggle="updateProductModal" class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
@@ -348,31 +348,51 @@
                                 </button>
                             </div>
                             <!-- Modal body -->
-                            <form action="/users/create" method="post">
+                            <form onsubmit="register(event, this)" action="dashboard/users/create" method="post">
                                 <div class="grid gap-4 mb-4 sm:grid-cols-2">
                                     <div>
                                         <label for="firstName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
-                                        <input type="text" name="firstName" id="firstName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type product name" required="">
+                                        <input type="text" name="firstName" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type user first name" >
                                     </div>
                                     <div>
                                         <label for="secondName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
-                                        <input type="text" name="secondName" id="secondName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Product brand" required="">
+                                        <input type="text" name="secondName" id="second_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type user last name " >
                                     </div>
                                     <div>
                                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                        <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required="">
+                                        <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="example@company.com" >
                                     </div>
                                     <div>
-                                        <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                                        <select id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                        <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
+                                        <select onchange="changeOnRoleInput(this)" name="role" id="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                             <option selected value="CLIENT">Client</option>
                                             <option value="ADMIN">Admin</option>
-                                            
                                         </select>
                                     </div>
+                                    <div id="roleClientInputs" class="grid gap-2 mb-4 sm:grid-cols-2">
+                                        <div>
+                                            <label for="deliveryAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Delivery Address</label>
+                                            <input type="text" name="deliveryAddress" id="deliveryAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="N10, Tokyo, Japan" >
+                                        </div>
+                                        <div>
+                                            <label for="paymentMethod" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Payment Method</label>
+                                            <input type="text" name="paymentMethod" id="paymentMethod" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Paypal" >
+                                        </div>
+                                    </div>
+                                    <div id="roleAdminInputs" class="hidden">
+                                        <div>
+                                            <label for="accessLevel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Access Level</label>
+                                            <input type="number" name="accessLevel" id="accessLevel" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="1 or 2" >
+                                        </div>
+                                    </div>
+
                                     <div class="sm:col-span-2">
-                                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                        <input id="description" name="password" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="*********">
+                                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                        <input id="password" name="password" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="*********">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+                                        <input id="confirm_password" name="confirm_password" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="*********">
                                     </div>
                                 </div>
                                 <button type="submit" class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
@@ -508,6 +528,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.8.1/alpine.js"></script>
     <script type="text/javascript" th:src="@{/resources/js/dashboard.js}"></script>
+    <script type="text/javascript" th:src="@{/resources/js/validateRegister.js}"></script>
 
 </body>
 </html>
