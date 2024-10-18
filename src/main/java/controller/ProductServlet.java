@@ -76,6 +76,9 @@ public class ProductServlet extends HttpServlet {
 		case "admin":
 			index(req, resp, "product/index");
 			break;
+		case "admin/search":
+			search(req, resp, "product/index");
+			break;
 		case "search":
 			search(req, resp, "index");
 			break;
@@ -170,6 +173,8 @@ public class ProductServlet extends HttpServlet {
 			model.setErrorMessage(e.getMessage());
 		}
 
+		resp.sendRedirect(req.getContextPath() + "/product/admin");
+
 	}
 
 	private void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -187,6 +192,7 @@ public class ProductServlet extends HttpServlet {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 		}
+		resp.sendRedirect(req.getContextPath() + "/product/admin");
 
 	}
 
@@ -200,6 +206,8 @@ public class ProductServlet extends HttpServlet {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 		}
+
+		resp.sendRedirect(req.getContextPath() + "/product/admin");
 
 	}
 
@@ -229,6 +237,7 @@ public class ProductServlet extends HttpServlet {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 			resp.sendRedirect(req.getContextPath() + "/product");
+			return;
 		}
 		String path = "pages/" + view;
 		returnView(req, resp, path, model);
