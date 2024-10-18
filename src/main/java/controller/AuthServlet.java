@@ -51,6 +51,8 @@ public class AuthServlet extends HttpServlet {
         if ("/login".equals(path)) {
             templateEngine.process("auth/login", ctx, res.getWriter());
         } else if ("/register".equals(path)) {
+            boolean isFirst = userService.isFirst();
+            ctx.setVariable("isFirst", isFirst);
             templateEngine.process("auth/register", ctx, res.getWriter());
         }
 
@@ -79,18 +81,20 @@ public class AuthServlet extends HttpServlet {
 
 
         if (userService.userExist(email).successful()) {
-            ctx.setVariable("error", "User already exist");
+            res.sendRedirect(req.getContextPath() + "/register?error=User already exists.");
         } else {
             User user = null;
             if (userService.isFirst()){
-                user = (Admin) new Admin(firstName, secondName, email, PasswordUtil.hashPassword(password));
+                user = (Admin) new Admin(firstName, secondName, email, PasswordUtil.hashPassword(password), 1); // super admin
             } else {
-                user = (Client) new Client(firstName, secondName, email, PasswordUtil.hashPassword(password));
+                String deliveryAddress = req.getParameter("deliveryAddress");
+			    String paymentMethod = req.getParameter("paymentMethod");
+                user = (Client) new Client(firstName, secondName, email, PasswordUtil.hashPassword(password), deliveryAddress, paymentMethod);
             }
             UserModel creation = userService.create(user);
             if (creation.successful()){
                 authUser(req, res, user); return;
-            } else ctx.setVariable("error", creation.message());
+            } else res.sendRedirect(req.getContextPath() + "/register?error=" + creation.message());
 
         }
         templateEngine.process("auth/register", ctx, res.getWriter());

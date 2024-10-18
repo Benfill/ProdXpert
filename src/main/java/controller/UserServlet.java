@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,12 +73,19 @@ private void create(HttpServletRequest req, HttpServletResponse res, WebContext 
 	String secondName = req.getParameter("secondName"); 
 	String email = req.getParameter("email"); 
 	String password = PasswordUtil.hashPassword(req.getParameter("password").toString()); 
-	UserRole role = UserRole.valueOf(req.getParameter("role").toString().toUpperCase());
+	String role = req.getParameter("role");
 
 	if (!userService.userExist(email).successful()) {
-		model = userService.create(new User(firstName, secondName, email, password));
-		ctx.setVariable("model", model);
-		res.sendRedirect(req.getContextPath() + "/dashboard");
+		if (role.equalsIgnoreCase("admin")) {
+			String accessLevel = req.getParameter("accessLevel");
+			model = userService.create(new Admin(firstName, secondName, email, password, Integer.parseInt(accessLevel)));
+		} else if (role.equalsIgnoreCase("client")) {
+			String deliveryAddress = req.getParameter("deliveryAddress");
+			String paymentMethod = req.getParameter("paymentMethod");
+			model = userService.create(new Client(firstName, secondName, email, password, deliveryAddress, paymentMethod));
+		}
+	
+		res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error?" + model.message()));
 	} else {
 		res.sendRedirect(req.getContextPath() + "/dashboard?error=user already exists.");
 	}

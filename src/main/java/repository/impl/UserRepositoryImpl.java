@@ -28,17 +28,16 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public List<User> getAll() {
-        Transaction transaction = null;
+        // Transaction transaction = null;
         List<User> users = null;
         try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = s.beginTransaction();
-            Query<User> query = s.createQuery("FROM User", User.class);
-            users = query.list();
-            transaction.commit();
+            // transaction = s.beginTransaction();
+            users = s.createQuery("select u FROM User u", User.class).getResultList();
+            // transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            // if (transaction != null) {
+            //     transaction.rollback();
+            // }
             e.printStackTrace();
         }
         return users;
@@ -51,7 +50,6 @@ public class UserRepositoryImpl implements IUserRepository {
         try {
             t = s.beginTransaction();
             s.save(user instanceof Admin ? (Admin) user : (Client) user);
-            // s.save((Admin) user);
             t.commit();
             model.setSuccess(true);
             model.setMessage("User created successfully.");

@@ -1,7 +1,6 @@
 function register(event, self) {
-    console.log('before prevent');
     event.preventDefault();
-    console.log('after prevent');
+
 
     const firstName = document.getElementById('first_name').value.trim();
     const secondName = document.getElementById('second_name').value.trim();
@@ -59,7 +58,7 @@ function register(event, self) {
                 showError("accessLevel", "Access Level must be one of the numbers 1 or 2.")
                 valid = false;
             }
-        } else if (role.value == "CLIENT"){
+        } else if (role.value === "CLIENT"){
             const deliveryAddress = document.getElementById("deliveryAddress").value.trim();
             const paymentMethod = document.getElementById("paymentMethod").value.trim();
             if(deliveryAddress === ""){
@@ -77,6 +76,22 @@ function register(event, self) {
         self.submit();
     }
 }
+
+function cleanUrl() {
+    history.replaceState(null, '', window.location.pathname);
+    let error = document.getElementById("error");
+    let success = document.getElementById("success");
+    if (error) {
+        error.className = "hidden";
+    }
+    if(success){
+        success.className = "hidden";
+    }
+}
+
+window.onload = function() {
+    setTimeout(cleanUrl, 6000);
+};
 
 function showError(inputId, message) {
     const inputElement = document.getElementById(inputId);

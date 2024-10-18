@@ -1,7 +1,5 @@
 package entity;
 
-import enums.UserRole;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -13,10 +11,9 @@ public class Admin extends User {
     public Admin(){
         super();
     }
-    public Admin(String fName, String sName, String email, String pwd) {
+    public Admin(String fName, String sName, String email, String pwd, int accessLevel) {
         super(fName, sName, email, pwd);
-        // this.setRole(UserRole.ADMIN);
-        // super(fName, sName, email, pwd, UserRole.ADMIN);
+        this.accessLevel = accessLevel;
     }
 
     public void setAccessLevel(int accessLevel){ this.accessLevel = accessLevel; }

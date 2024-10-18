@@ -60,6 +60,9 @@
 		<servlet-name>User</servlet-name>
 		<url-pattern>/dashboard</url-pattern>
 		<url-pattern>/dashboard/users/create</url-pattern>
+		<url-pattern>/dashboard/users/delete</url-pattern>
+		<url-pattern>/dashboard/users/update</url-pattern>
+
 	</servlet-mapping>
 
 	<!-- home -->

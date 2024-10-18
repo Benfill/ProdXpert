@@ -95,13 +95,16 @@ public class User {
 		this.email = email;
 	}
 
-	// public UserRole getRole() {
-	// 	return role;
-	// }
+	public String getType() {
+		if (this instanceof Admin) {
+			return "Admin";
+		} else if (this instanceof Client) {
+			return "Client";
+		} else {
+			return "Unknown";
+		}
+	}
 
-	// public void setRole(UserRole role) {
-	// 	this.role = role;
-	// }
 
 	public void setPassword(String password) {
 		this.password = password;

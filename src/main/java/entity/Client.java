@@ -1,7 +1,5 @@
 package entity;
 
-import enums.UserRole;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -15,10 +13,10 @@ public class Client extends User {
         super();
     }
 
-    public Client(String fName, String sName, String email, String pwd) {
+    public Client(String fName, String sName, String email, String pwd, String deliveryAddress, String paymentMethod) {
         super(fName, sName, email, pwd);
-        // this.setRole(UserRole.CLIENT);
-        // super(fName, sName, email, pwd, UserRole.CLIENT);
+        this.deliveryAddress = deliveryAddress;
+        this.paymentMethod = paymentMethod;
     }
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
