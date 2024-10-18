@@ -12,11 +12,13 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import entity.User;
 import model.ProductDto;
 import model.ProductModel;
 import service.impl.ProductServiceImpl;
@@ -113,7 +115,19 @@ public class ProductServlet extends HttpServlet {
 			logger.warning(e.getMessage());
 			model.setErrorMessage(e.getMessage());
 		}
-		String path = "pages/" + view;
+		HttpSession session = req.getSession();
+		User user;
+		String path;
+
+		if (session.getAttribute("authUser") != null) {
+			user = (User) session.getAttribute("authUser");
+			if (user.getType().equalsIgnoreCase("admin"))
+				path = "pages/" + view;
+			else
+				path = "pages/index";
+		} else
+			path = "pages/index";
+
 		returnView(req, resp, path, model);
 	}
 
