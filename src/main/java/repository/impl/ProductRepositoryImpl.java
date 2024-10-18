@@ -62,6 +62,7 @@ public class ProductRepositoryImpl implements IProductRepository {
 
 		session.beginTransaction();
 		session.delete(p);
+		session.getTransaction().commit();
 		session.close();
 
 	}

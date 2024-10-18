@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Product Details</title>
+<link
+	th:href="@{https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css}"
+	rel="stylesheet" />
+<link
+	href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css?family=Abhaya+Libre:400,800|Montserrat:600|Alegreya+Sans:500&display=swap"
+	rel="stylesheet">
+</head>
+<body>
+	<header th:replace="~{fragments/header :: header}"></header>
+
+	<main class="min-h-screen bg-gray-50 dark:bg-gray-900 py-16">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div
+				class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+				<div class="flex flex-col md:flex-row">
+					<!-- Product Image Section -->
+					<div class="md:w-1/2 p-6">
+						<div
+							class="aspect-square rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700">
+							<img th:src="@{${model.product.picturePath}}" alt="Product Image"
+								class="w-full h-full object-cover" />
+						</div>
+
+						<div class="grid grid-cols-2 gap-4 mt-6">
+							<button
+								class="add-button w-full bg-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-indigo-700 transition-colors duration-200">
+								Add to Cart</button>
+							<button
+								class="w-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+								Add to Wishlist</button>
+						</div>
+					</div>
+
+					<!-- Product Details Section -->
+					<div class="md:w-1/2 p-6">
+						<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4"
+							th:text="${model.product.name}"></h1>
+
+						<div class="space-y-6">
+							<div class="flex items-center justify-between">
+								<div class="space-y-1">
+									<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Price</p>
+									<p class="text-2xl font-bold text-gray-900 dark:text-white">
+										<span
+											th:text="|$ ${#numbers.formatDecimal(model.product.price, 1, 'COMMA', 2, 'POINT')}|"></span>
+									</p>
+								</div>
+								<div class="space-y-1">
+									<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Stock</p>
+									<p class="text-2xl font-bold text-gray-900 dark:text-white">
+										<span th:text="${model.product.stock} + ' pieces'"></span>
+									</p>
+								</div>
+							</div>
+
+							<!-- Color Selection -->
+							<div class="space-y-3">
+								<label
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+									Select Color </label>
+								<div class="flex space-x-3">
+									<button
+										class="w-8 h-8 rounded-full bg-gray-900 ring-2 ring-offset-2 ring-transparent hover:ring-gray-400 transition-all duration-200"></button>
+									<button
+										class="w-8 h-8 rounded-full bg-red-500 ring-2 ring-offset-2 ring-transparent hover:ring-gray-400 transition-all duration-200"></button>
+									<button
+										class="w-8 h-8 rounded-full bg-blue-500 ring-2 ring-offset-2 ring-transparent hover:ring-gray-400 transition-all duration-200"></button>
+									<button
+										class="w-8 h-8 rounded-full bg-yellow-500 ring-2 ring-offset-2 ring-transparent hover:ring-gray-400 transition-all duration-200"></button>
+								</div>
+							</div>
+
+							<!-- Size Selection -->
+							<div class="space-y-3">
+								<label
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+									Select Size </label>
+								<div class="flex flex-wrap gap-2">
+									<button
+										class="min-w-[3rem] py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">S</button>
+									<button
+										class="min-w-[3rem] py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">M</button>
+									<button
+										class="min-w-[3rem] py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">L</button>
+									<button
+										class="min-w-[3rem] py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">XL</button>
+									<button
+										class="min-w-[3rem] py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">XXL</button>
+								</div>
+							</div>
+
+							<!-- Product Description -->
+							<div class="space-y-3">
+								<h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">
+									Product Description</h3>
+								<p class="text-gray-600 dark:text-gray-400 leading-relaxed"
+									th:text="${model.product.description}"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script>
+		function changeImage(src) {
+			document.getElementById('mainImage').src = src;
+		}
+	</script>
+	<script>
+		function handleScroll() {
+			if (window.scrollY > 0) {
+				header.classList.remove('bg-transparent');
+				header.classList.add('bg-white');
+			} else {
+				header.classList.remove('bg-white');
+				header.classList.add('bg-transparent');
+			}
+		}
+
+		window.addEventListener('scroll', handleScroll);
+	</script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+	<script type="text/javascript" th:src="@{/resources/js/cartHandler.js}"></script>
+</body>
+</html>
