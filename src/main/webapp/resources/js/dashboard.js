@@ -46,5 +46,4 @@ const changeOnRoleInput = (self) => {
         clientInputs.classList.remove("hidden");
         adminInputs.classList.add("hidden");
     }
-    // if (self === "CLIENT")
 }
