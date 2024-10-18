@@ -11,7 +11,7 @@
 
 	</div>
 	
-	<form action="product/store" method="post" enctype="multipart/form-data">
+	<form th:action="@{/product/store}" method="post" enctype="multipart/form-data">
     <input type="text" name="name" />
     <input type="text" name="description" />
     <input type="number" name="price" />

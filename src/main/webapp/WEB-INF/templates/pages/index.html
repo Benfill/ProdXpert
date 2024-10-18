@@ -1,98 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>prodXpert</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}" />
-    <!-- Tailwind CSS via CDN -->
-    <link th:href="@{https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css}" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Abhaya+Libre:400,800|Montserrat:600|Alegreya+Sans:500&display=swap" rel="stylesheet">
+<title>prodXpert</title>
+<link rel="stylesheet" th:href="@{/resources/css/style.css}" />
+<!-- Tailwind CSS via CDN -->
+<link
+	th:href="@{https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css}"
+	rel="stylesheet" />
+<link
+	href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css?family=Abhaya+Libre:400,800|Montserrat:600|Alegreya+Sans:500&display=swap"
+	rel="stylesheet">
 
 </head>
 <body>
-    <div className="overflow-hidden">
-        <header  th:replace="~{fragments/header :: header}"></header>
+	<div className="overflow-hidden">
+		<header th:replace="~{fragments/header :: header}"></header>
 
-        <section  th:replace="~{fragments/hero :: hero}"></section>
+		<section th:replace="~{fragments/hero :: hero}"></section>
 
-        <section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
-            <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-              <!-- Heading & Filters -->
-              <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
-                <div>
-                  <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <button data-modal-toggle="filterModal" data-modal-target="filterModal" type="button" class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
-                    <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
-                    </svg>
-                    Filters
-                    <svg class="-me-0.5 ms-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <button id="sortDropdownButton1" data-dropdown-toggle="dropdownSort1" type="button" class="flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto">
-                    <svg class="-ms-0.5 me-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M7 4l3 3M7 4 4 7m9-3h6l-6 6h6m-6.5 10 3.5-7 3.5 7M14 18h4" />
-                    </svg>
-                    Sort
-                    <svg class="-me-0.5 ms-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div id="dropdownSort1" class="z-50 hidden w-40 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700" data-popper-placement="bottom">
-                    <ul class="p-2 text-left text-sm font-medium text-gray-500 dark:text-gray-400" aria-labelledby="sortDropdownButton">
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> The most popular </a>
-                      </li>
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Newest </a>
-                      </li>
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Increasing price </a>
-                      </li>
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Decreasing price </a>
-                      </li>
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> No. reviews </a>
-                      </li>
-                      <li>
-                        <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Discount % </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
-                 <div  th:replace="~{fragments/productCard :: productCard}"></div>
+		<section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
+			<div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+				<!-- Heading & Filters -->
+				<form th:action="@{/product/search}"
+					class="mb-4 flex justify-between items-center space-x-4 sm:space-x-0 md:mb-8">
+					<div>
+						<h2
+							class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
+					</div>
 
-            </div>
-            
-          </section>
-        
-    
-    </div>
-  
-   
+					<div
+						class="flex px-2 py-2 rounded-md gap-6 overflow-hidden max-w-md w-full sm:w-auto justify-end">
+						<input type="text" placeholder="Search Something..." name="q"
+							class="w-full outline-none bg-transparent text-gray-600 text-sm px-2 py-1" />
+
+						<button>
+							<svg xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 192.904 192.904" width="16px" class="fill-gray-600">
+					      <path
+									d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
+					    </svg>
+						</button>
+					</div>
+				</form>
 
 
-    <script>
-        
-            function handleScroll() {
-                if (window.scrollY > 0) {
-                    header.classList.remove('bg-transparent');
-                    header.classList.add('bg-white'); 
-                } else {
-                    header.classList.remove('bg-white');
-                    header.classList.add('bg-transparent');
-                }
-            }
-        
-            window.addEventListener('scroll', handleScroll);
-        </script>
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+				<!-- Parent container for all products -->
+				<div
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+					<!-- Product cards -->
+					<div th:each="product: ${model.products}">
+						<div
+							th:replace="~{fragments/productCard :: productCard(${product})}"></div>
+					</div>
+				</div>
+
+				<div th:if="${model.totalPages > 1}">
+					<nav aria-label="Page navigation example pb-20"
+						class="flex align-center justify-center m-2">
+						<ul class="inline-flex -space-x-px text-base h-10">
+							<!-- Previous Page Link -->
+							<div th:if="${model.page > 1}">
+								<li><a href="#" th:href="@{|?page=${model.page - 1}|}"
+									class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+										Previous </a></li>
+							</div>
+
+							<!-- Page Numbers -->
+							<div th:each="i : ${#numbers.sequence(1, model.totalPages)}">
+								<li><a href="#" th:href="@{|?page=${i}|}"
+									class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+									th:classappend="${model.page == i} ? 'font-bold' : ''"
+									th:text="${i}"> </a></li>
+							</div>
+
+							<!-- Next Page Link -->
+							<div th:if="${model.page < model.totalPages}">
+								<li><a href="#" th:href="@{|?page=${model.page + 1}|}"
+									class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+										Next </a></li>
+							</div>
+						</ul>
+					</nav>
+				</div>
+		</section>
+
+
+	</div>
+
+
+
+
+	<script>
+		function handleScroll() {
+			if (window.scrollY > 0) {
+				header.classList.remove('bg-transparent');
+				header.classList.add('bg-white');
+			} else {
+				header.classList.remove('bg-white');
+				header.classList.add('bg-transparent');
+			}
+		}
+
+		window.addEventListener('scroll', handleScroll);
+	</script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+		<script type="text/javascript" th:src="@{/resources/js/cartHandler.js}"></script>
 </body>
 </html>
