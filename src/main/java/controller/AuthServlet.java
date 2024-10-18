@@ -1,5 +1,7 @@
 package controller;
 
+import entity.Admin;
+import entity.Client;
 import entity.User;
 import enums.UserRole;
 import model.UserModel;
@@ -15,9 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+
 
 public class AuthServlet extends HttpServlet {
     private TemplateEngine templateEngine;
@@ -44,13 +44,15 @@ public class AuthServlet extends HttpServlet {
         String path = req.getServletPath();
 
         if (checkAuth(req)){ // redirect home if authenticated
-            res.sendRedirect("/prodXpert/");
+            res.sendRedirect(req.getContextPath());
             return;
         }
 
         if ("/login".equals(path)) {
             templateEngine.process("auth/login", ctx, res.getWriter());
         } else if ("/register".equals(path)) {
+            boolean isFirst = userService.isFirst();
+            ctx.setVariable("isFirst", isFirst);
             templateEngine.process("auth/register", ctx, res.getWriter());
         }
 
@@ -65,6 +67,8 @@ public class AuthServlet extends HttpServlet {
             login(req, res, ctx);
         } else if ("/register".equals(path)) {
             register(req, res, ctx);
+        } else if ("/logout".equals(path)){
+            logout(req, res);
         }
     }
 
@@ -73,18 +77,24 @@ public class AuthServlet extends HttpServlet {
         String secondName = req.getParameter("secondName");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        UserRole role = null;
+
 
 
         if (userService.userExist(email).successful()) {
-            ctx.setVariable("error", "User already exist");
+            res.sendRedirect(req.getContextPath() + "/register?error=User already exists.");
         } else {
-            role = userService.isFirst() ? UserRole.ADMIN : UserRole.CLIENT;
-            User user = new User(firstName, secondName, email, PasswordUtil.hashPassword(password), role);
+            User user = null;
+            if (userService.isFirst()){
+                user = (Admin) new Admin(firstName, secondName, email, PasswordUtil.hashPassword(password), 1); // super admin
+            } else {
+                String deliveryAddress = req.getParameter("deliveryAddress");
+			    String paymentMethod = req.getParameter("paymentMethod");
+                user = (Client) new Client(firstName, secondName, email, PasswordUtil.hashPassword(password), deliveryAddress, paymentMethod);
+            }
             UserModel creation = userService.create(user);
             if (creation.successful()){
                 authUser(req, res, user); return;
-            } else ctx.setVariable("error", creation.message());
+            } else res.sendRedirect(req.getContextPath() + "/register?error=" + creation.message());
 
         }
         templateEngine.process("auth/register", ctx, res.getWriter());
@@ -94,7 +104,9 @@ public class AuthServlet extends HttpServlet {
     private void login(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+
         UserModel userExistence = userService.userExist(email);
+        
         if (userExistence.successful()) {
             if (PasswordUtil.verifyPassword(userExistence.getUSer().getPassword(), password)){
                 authUser(req, res, userExistence.getUSer());
@@ -106,11 +118,18 @@ public class AuthServlet extends HttpServlet {
     private void authUser(HttpServletRequest req, HttpServletResponse res, User user) throws IOException { // authenticates user
         HttpSession session = req.getSession();
         session.setAttribute("authUser",user);
-        res.sendRedirect("/prodXpert/");
+        res.sendRedirect(req.getContextPath());
     }
 
     private boolean checkAuth(HttpServletRequest req) { // check authentication
         HttpSession session = req.getSession();
         return session != null && session.getAttribute("authUser") != null;
     }
+    private void logout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		HttpSession session = req.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+		res.sendRedirect(req.getContextPath());
+	}
 }

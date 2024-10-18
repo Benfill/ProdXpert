@@ -28,6 +28,8 @@
 
         <!-- Entity mappings -->
         <mapping class="entity.User"/>
+        <mapping class="entity.Admin"/>
+        <mapping class="entity.Client"/>
         <mapping class="entity.Product"/>
         
     </session-factory>
