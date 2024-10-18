@@ -65,13 +65,32 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void update(User user) {
+    public UserModel update(User user) {
 
+        return model;
     }
 
     @Override
-    public void delete(User user) {
+    public UserModel delete(User user) {
+        try(Session s = sessionFactory.openSession()){
+            if (user instanceof Admin) {
+                Admin admin = (Admin) user;
+                int access = admin.getAccessLevel();
+                if (access == 2 ) {
+                    
+                }
+                
+            }
+            s.delete(user);
+            model.setSuccess(true);
+            model.setMessage("User deleted.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.setSuccess(false);
+            model.setMessage("Failed deleting user.");
+        }
 
+        return model;
     }
 
     @Override
@@ -96,7 +115,7 @@ public class UserRepositoryImpl implements IUserRepository {
     
 
     @Override
-    public User findById(int id) {
+    public User findById(Long id) {
         Transaction t = null;
         User user = null;
         try(Session s = sessionFactory.openSession()) {
@@ -108,9 +127,18 @@ public class UserRepositoryImpl implements IUserRepository {
                 t.rollback();
             }
             e.printStackTrace();
+            userAccess(user);
         }
         return user;
     }
 
+    private int userAccess(User user){
+        if (user instanceof Admin) {
+            Admin admin = (Admin) user;
+            return admin.getAccessLevel();
+        } else if (user instanceof Client){
+            return 0;
+        }
+    }
 
 }

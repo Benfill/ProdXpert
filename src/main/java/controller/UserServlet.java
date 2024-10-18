@@ -57,9 +57,15 @@ public class UserServlet extends HttpServlet {
 		String path = req.getServletPath();
         WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 
-		if ("/dashboard/users/create".equals(path)) {
-			create(req, res, ctx);
-		}
+		if(authAndHasAccess(req)){
+			if ("/dashboard/users/create".equals(path)) {
+				create(req, res, ctx);
+			} else if ("/dashboard/users/delete".equals(path)) {
+				delete(req, res, ctx);
+			} else if ("/dashboard/users/update".equals(ctx)){
+				update(req, res, ctx);
+			}
+		} else res.sendRedirect(req.getContentType() + "?error=access denied.");
 	}
 	
     private boolean authAndHasAccess(HttpServletRequest req) { // check authentication
@@ -68,28 +74,38 @@ public class UserServlet extends HttpServlet {
         return session != null &&  user != null && user instanceof Admin;
     }
 
-private void create(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
-	String firstName = req.getParameter("firstName"); 
-	String secondName = req.getParameter("secondName"); 
-	String email = req.getParameter("email"); 
-	String password = PasswordUtil.hashPassword(req.getParameter("password").toString()); 
-	String role = req.getParameter("role");
+	private void create(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
+		String firstName = req.getParameter("firstName"); 
+		String secondName = req.getParameter("secondName"); 
+		String email = req.getParameter("email"); 
+		String password = PasswordUtil.hashPassword(req.getParameter("password").toString()); 
+		String role = req.getParameter("role");
 
-	if (!userService.userExist(email).successful()) {
-		if (role.equalsIgnoreCase("admin")) {
-			String accessLevel = req.getParameter("accessLevel");
-			model = userService.create(new Admin(firstName, secondName, email, password, Integer.parseInt(accessLevel)));
-		} else if (role.equalsIgnoreCase("client")) {
-			String deliveryAddress = req.getParameter("deliveryAddress");
-			String paymentMethod = req.getParameter("paymentMethod");
-			model = userService.create(new Client(firstName, secondName, email, password, deliveryAddress, paymentMethod));
+		if (!userService.userExist(email).successful()) {
+			if (role.equalsIgnoreCase("admin")) {
+				String accessLevel = req.getParameter("accessLevel");
+				model = userService.create(new Admin(firstName, secondName, email, password, Integer.parseInt(accessLevel)));
+			} else if (role.equalsIgnoreCase("client")) {
+				String deliveryAddress = req.getParameter("deliveryAddress");
+				String paymentMethod = req.getParameter("paymentMethod");
+				model = userService.create(new Client(firstName, secondName, email, password, deliveryAddress, paymentMethod));
+			}
+		
+			res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error?" + model.message()));
+		} else {
+			res.sendRedirect(req.getContextPath() + "/dashboard?error=user already exists.");
 		}
-	
-		res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error?" + model.message()));
-	} else {
-		res.sendRedirect(req.getContextPath() + "/dashboard?error=user already exists.");
 	}
 
-}
+	private void delete(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
+		long userId = Long.parseLong(req.getParameter("user_id"));
+		if (!userService.userExist(userId)) {
+			UserModel model = userService.delete(userId);
+			ctx.setVariable("model", model);
+			templateEngine.process("dashboard/index", ctx, res.getWriter());
+		}
+	}
+	private void update(HttpServletRequest req, HttpServletResponse res, WebContext ctx){
 
+	}
 }

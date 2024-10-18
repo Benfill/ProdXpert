@@ -6,7 +6,6 @@ const setup = () => {
     }
 
 
-let clickedUserId;
 const hInput = document.getElementById("delete-user-id");
 
 
@@ -14,7 +13,7 @@ const toggleMenu = (self) => {
     event.stopPropagation(); // stop even from bubbling
 
     let userId = self.getAttribute("data-clicked-user-id");
-    clickedUserId = userId;
+    hInput.value = userId;
 
     let menu = document.getElementById(`clicked-user-id-menu-${userId}`);
 

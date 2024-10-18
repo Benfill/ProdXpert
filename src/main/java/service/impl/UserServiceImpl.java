@@ -38,8 +38,24 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public boolean userExist(Long id){
+        return findById(id) != null;
+    }
+
+    @Override
+    public User findById(Long id){
+        return userRepository.findById(id);
+    }
+
+    @Override
     public UserModel create(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserModel delete(Long id){
+        User user = findById(id);
+        return userRepository.delete(user);
     }
 
     @Override
