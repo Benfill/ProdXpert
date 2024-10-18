@@ -1,6 +1,7 @@
 package controller;
 
 import entity.Admin;
+import entity.Client;
 import entity.User;
 import enums.UserRole;
 import model.UserModel;
@@ -74,14 +75,18 @@ public class AuthServlet extends HttpServlet {
         String secondName = req.getParameter("secondName");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        // UserRole role = null;
+
 
 
         if (userService.userExist(email).successful()) {
             ctx.setVariable("error", "User already exist");
         } else {
-            // role = userService.isFirst() ? UserRole.ADMIN : UserRole.CLIENT;
-            Admin user = new Admin(firstName, secondName, email, PasswordUtil.hashPassword(password));
+            User user = null;
+            if (userService.isFirst()){
+                user = (Admin) new Admin(firstName, secondName, email, PasswordUtil.hashPassword(password));
+            } else {
+                user = (Client) new Client(firstName, secondName, email, PasswordUtil.hashPassword(password));
+            }
             UserModel creation = userService.create(user);
             if (creation.successful()){
                 authUser(req, res, user); return;
@@ -95,7 +100,9 @@ public class AuthServlet extends HttpServlet {
     private void login(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+
         UserModel userExistence = userService.userExist(email);
+        
         if (userExistence.successful()) {
             if (PasswordUtil.verifyPassword(userExistence.getUSer().getPassword(), password)){
                 authUser(req, res, userExistence.getUSer());

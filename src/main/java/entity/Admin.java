@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 public class Admin extends User {
     private int accessLevel;
 
+    public Admin(){
+        super();
+    }
     public Admin(String fName, String sName, String email, String pwd) {
         super(fName, sName, email, pwd);
         // this.setRole(UserRole.ADMIN);

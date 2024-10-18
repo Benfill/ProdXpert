@@ -50,8 +50,8 @@ public class UserRepositoryImpl implements IUserRepository {
         Session s = sessionFactory.openSession();
         try {
             t = s.beginTransaction();
-            // s.save(user.getRole().equals(UserRole.ADMIN) ? (Admin) user : (Client) user);
-            s.save((Admin) user);
+            s.save(user instanceof Admin ? (Admin) user : (Client) user);
+            // s.save((Admin) user);
             t.commit();
             model.setSuccess(true);
             model.setMessage("User created successfully.");
@@ -78,21 +78,24 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public User findByEmail(String email) {
-        Session s = sessionFactory.openSession();
         User user = null;
-
-        try {
-            user = (User) s.createQuery("from User where email = :email")
-                .setParameter("email", email)
-                .uniqueResult();
- 
+    
+        try (Session s = sessionFactory.openSession()) {
+            user = s.createQuery("from User where email = :email", User.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+                    logger.error("the EMAIL to SEARCH with : " + email);
+                    logger.error("the user FOUND : ", user);
+                    logger.error("the user FIRST NAME : ", user.getFirstName());
+                    
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            s.close();
+            logger.error("ERROR FINDING USER : ", e);
         }
+    
         return user;
     }
+    
 
     @Override
     public User findById(int id) {

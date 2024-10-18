@@ -11,6 +11,10 @@ public class Client extends User {
     private String deliveryAddress;
     private String paymentMethod;
 
+    public Client(){
+        super();
+    }
+
     public Client(String fName, String sName, String email, String pwd) {
         super(fName, sName, email, pwd);
         // this.setRole(UserRole.CLIENT);
