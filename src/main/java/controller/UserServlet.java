@@ -99,11 +99,10 @@ public class UserServlet extends HttpServlet {
 
 	private void delete(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
 		long userId = Long.parseLong(req.getParameter("user_id"));
-		if (!userService.userExist(userId)) {
+		if (userService.userExist(userId)) {
 			UserModel model = userService.delete(userId);
-			ctx.setVariable("model", model);
-			templateEngine.process("dashboard/index", ctx, res.getWriter());
-		}
+			res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error?" + model.message()));
+		} else res.sendRedirect(req.getContextPath() + "dashboard?error=no user found.");
 	}
 	private void update(HttpServletRequest req, HttpServletResponse res, WebContext ctx){
 

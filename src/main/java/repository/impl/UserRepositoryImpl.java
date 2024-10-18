@@ -65,31 +65,41 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public UserModel update(User user) {
+    public UserModel update(User user) { // primary update
+        Transaction t = null;
 
+        try(Session s = sessionFactory.openSession()){
+            t = s.beginTransaction();
+            s.update(user);
+            t.commit();
+            model.setSuccess(true);
+            model.setMessage("User updated.");
+        } catch(Exception e){
+            e.printStackTrace();
+            model.setSuccess(false);
+            model.setMessage("Failed updating user.");
+        }
         return model;
     }
 
     @Override
     public UserModel delete(User user) {
+        Transaction t = null;
         try(Session s = sessionFactory.openSession()){
-            if (user instanceof Admin) {
-                Admin admin = (Admin) user;
-                int access = admin.getAccessLevel();
-                if (access == 2 ) {
-                    
-                }
-                
+            if (userAccess(user) > 1) { // can delete only client or sub admin (access 2 or 3)
+                t = s.beginTransaction();
+                s.delete(user);
+                t.commit();
+                model.setSuccess(true);
+                model.setMessage("User deleted.");
+            } else {
+                model.setSuccess(false); model.setMessage("Cannot delete super admin.");
             }
-            s.delete(user);
-            model.setSuccess(true);
-            model.setMessage("User deleted.");
         } catch (Exception e) {
             e.printStackTrace();
             model.setSuccess(false);
             model.setMessage("Failed deleting user.");
         }
-
         return model;
     }
 
@@ -101,15 +111,11 @@ public class UserRepositoryImpl implements IUserRepository {
             user = s.createQuery("from User where email = :email", User.class)
                     .setParameter("email", email)
                     .uniqueResult();
-                    logger.error("the EMAIL to SEARCH with : " + email);
-                    logger.error("the user FOUND : ", user);
-                    logger.error("the user FIRST NAME : ", user.getFirstName());
                     
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("ERROR FINDING USER : ", e);
+
         }
-    
         return user;
     }
     
@@ -127,18 +133,17 @@ public class UserRepositoryImpl implements IUserRepository {
                 t.rollback();
             }
             e.printStackTrace();
-            userAccess(user);
         }
         return user;
     }
 
-    private int userAccess(User user){
+    private int userAccess(User user) {
+        int access = 3; // client
         if (user instanceof Admin) {
             Admin admin = (Admin) user;
-            return admin.getAccessLevel();
-        } else if (user instanceof Client){
-            return 0;
+            access = admin.getAccessLevel();
         }
+        return access;
     }
 
 }

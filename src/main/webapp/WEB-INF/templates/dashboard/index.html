@@ -42,10 +42,19 @@
           </button>
 
 
-          <!-- main content  -->
-          <div>
-            <!-- Start block -->
-                <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
+          <!-- main  -->
+          <div class="h-3/4 w-5/6">
+            <!-- error/success -->
+            <div th:if="${param.error != null}" id="error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                <span th:text="${param.error}" class="font-medium"></span>
+            </div>
+    
+            <div th:if="${param.success != null}" id="success" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                <span th:text="${param.success}" class="font-medium"></span>
+            </div>
+
+            <!-- display -->
+                <section class="dark:bg-gray-900 p-3 sm:p-5 antialiased">
                     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                         <!-- Start coding here -->
                         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -209,7 +218,6 @@
                         </div>
                     </div>
                 </section>
-                <!-- End block -->
 
                
 
