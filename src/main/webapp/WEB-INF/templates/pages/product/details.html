@@ -12,6 +12,8 @@
 <link
 	href="https://fonts.googleapis.com/css?family=Abhaya+Libre:400,800|Montserrat:600|Alegreya+Sans:500&display=swap"
 	rel="stylesheet">
+    <script src="jquery-3.7.1.min.js"></script>
+
 </head>
 <body>
 	<header th:replace="~{fragments/header :: header}"></header>
@@ -31,8 +33,12 @@
 
 						<div class="grid grid-cols-2 gap-4 mt-6">
 							<button
-								class="add-button w-full bg-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-indigo-700 transition-colors duration-200">
-								Add to Cart</button>
+								th:data-name="${model.product.name}"
+								th:data-price="${#numbers.formatDecimal(model.product.price, 1, 'COMMA', 2, 'POINT')}"
+								th:data-picturepath="${model.product.picturePath}"
+								class="add-to-cart w-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+								Add to Cart
+							</button>
 							<button
 								class="w-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
 								Add to Wishlist</button>
@@ -111,24 +117,10 @@
 		</div>
 	</main>
 
-	<script>
-		function changeImage(src) {
-			document.getElementById('mainImage').src = src;
-		}
-	</script>
-	<script>
-		function handleScroll() {
-			if (window.scrollY > 0) {
-				header.classList.remove('bg-transparent');
-				header.classList.add('bg-white');
-			} else {
-				header.classList.remove('bg-white');
-				header.classList.add('bg-transparent');
-			}
-		}
+	<div th:replace="~{fragments/cartModal :: cart-modal}" ></div>
 
-		window.addEventListener('scroll', handleScroll);
-	</script>
+	<script type="text/javascript" th:src="@{/resources/js/index.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 	<script type="text/javascript" th:src="@{/resources/js/cartHandler.js}"></script>
