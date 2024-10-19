@@ -6,6 +6,7 @@
     <link th:href="@{https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css}" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Abhaya+Libre:400,800|Montserrat:600|Alegreya+Sans:500&display=swap" rel="stylesheet">
+  <script src="jquery-3.7.1.min.js"></script>
 
 </head>
 <body>
@@ -14,11 +15,7 @@
 
        
         <section class="bg-white py-8 antialiased  md:py-16">
-          
-         
-        </div>
-        
-            <form th:action="@{/order(action='save')}" method="post" class="mx-auto max-w-screen-xl mt-20 px-4 2xl:px-0">
+            <form th:action="@{/order(action='save')}" method="post" id="form" class="mx-auto max-w-screen-xl mt-20 px-4 2xl:px-0">
               <ol class="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
                 <li class="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
                   <span class="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
@@ -328,34 +325,14 @@
                   <div class="flow-root">
                     <div class="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Subtotal</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">$8,094.00</dd>
-                        <input type="hidden" id="vat_number" name="total" 
-                        value="18.392"
-                         placeholder="DE42313253" 
-                         required />
+                     
                        
 
                       </dl>
-          
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                        <dd class="text-base font-medium text-green-500">0</dd>
-                      </dl>
-          
-                      <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Store Pickup</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">$99</dd>
-                      </dl>
-          
-                      <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                        <dd class="text-base font-medium text-gray-900 dark:text-white">$199</dd>
-                      </dl>
-          
-                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <input type="hidden" id="total" />
                         <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                        <dd class="text-base font-bold text-gray-900 dark:text-white">$8,392.00</dd>
+                        <dd class="text-base font-bold text-gray-900 dark:text-white total-cart"></dd>
                       </dl>
                     </div>
                   </div>
@@ -365,12 +342,16 @@
                 
               </div>
             </form>
-          </section>
+        </section>
+
       
         
     
     </div>
+    <div th:replace="~{fragments/cartModal :: cart-modal}" ></div>
+
   
+
    
 
 
@@ -387,8 +368,21 @@
             }
         
             window.addEventListener('scroll', handleScroll);
+
+            let cart = JSON.parse(sessionStorage.getItem('shoppingCart'));
+
+            var totalCart = 0;
+            for(var item in cart) {
+              totalCart += cart[item].price * cart[item].count;
+            }
+            const totalInput = document.getElementById("total");
+            totalInput.value = Number(totalCart.toFixed(2));
         </script>
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script type="text/javascript" th:src="@{/resources/js/index.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+	<script type="text/javascript" th:src="@{/resources/js/cartHandler.js}"></script>
 </body>
 </html>
