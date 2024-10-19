@@ -49,7 +49,7 @@ function register(event, self) {
     }
 
     if(role != null){
-        if(role.value == "ADMIN"){
+        if(role.value == "Admin"){
             const accessLevel = document.getElementById('accessLevel').value.trim();
             if(accessLevel === "" || accessLevel == 0){
                 showError("accessLevel", "Access Level is required.")
@@ -58,7 +58,7 @@ function register(event, self) {
                 showError("accessLevel", "Access Level must be one of the numbers 1 or 2.")
                 valid = false;
             }
-        } else if (role.value === "CLIENT"){
+        } else if (role.value == "Client"){
             const deliveryAddress = document.getElementById("deliveryAddress").value.trim();
             const paymentMethod = document.getElementById("paymentMethod").value.trim();
             if(deliveryAddress === ""){
@@ -77,21 +77,7 @@ function register(event, self) {
     }
 }
 
-function cleanUrl() {
-    history.replaceState(null, '', window.location.pathname);
-    let error = document.getElementById("error");
-    let success = document.getElementById("success");
-    if (error) {
-        error.className = "hidden";
-    }
-    if(success){
-        success.className = "hidden";
-    }
-}
 
-window.onload = function() {
-    setTimeout(cleanUrl, 6000);
-};
 
 function showError(inputId, message) {
     const inputElement = document.getElementById(inputId);

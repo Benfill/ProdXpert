@@ -62,4 +62,9 @@ public class UserServiceImpl implements IUserService {
     public boolean isFirst(){
         return userRepository.getAll().isEmpty();
     }
+
+    @Override
+    public UserModel update(User user){
+        return userRepository.update(user);
+    }
 }

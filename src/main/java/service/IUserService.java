@@ -17,4 +17,6 @@ public interface IUserService {
 
     UserModel delete(Long id);
 
+    UserModel update(User user);
+
 }

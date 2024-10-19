@@ -15,7 +15,6 @@ import utils.HibernateUtil;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 public class UserRepositoryImpl implements IUserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private final SessionFactory sessionFactory;
@@ -66,19 +65,24 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public UserModel update(User user) { // primary update
+        model.setMessage("before operation");
         Transaction t = null;
 
         try(Session s = sessionFactory.openSession()){
             t = s.beginTransaction();
-            s.update(user);
+            s.merge(user);
             t.commit();
             model.setSuccess(true);
             model.setMessage("User updated.");
         } catch(Exception e){
+            if (t != null) {
+                t.rollback();
+            }
             e.printStackTrace();
             model.setSuccess(false);
             model.setMessage("Failed updating user.");
         }
+        model.setMessage("after operation");
         return model;
     }
 

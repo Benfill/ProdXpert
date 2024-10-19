@@ -62,8 +62,8 @@ public class UserServlet extends HttpServlet {
 				create(req, res, ctx);
 			} else if ("/dashboard/users/delete".equals(path)) {
 				delete(req, res, ctx);
-			} else if ("/dashboard/users/update".equals(ctx)){
-				update(req, res, ctx);
+			} else if ("/dashboard/users/update".equals(path)){
+				update(req, res);
 			}
 		// } else res.sendRedirect(req.getContentType() + "?error=access denied.");
 	}
@@ -101,10 +101,34 @@ public class UserServlet extends HttpServlet {
 		long userId = Long.parseLong(req.getParameter("user_id"));
 		if (userService.userExist(userId)) {
 			UserModel model = userService.delete(userId);
-			res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error?" + model.message()));
+			res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error=" + model.message()));
 		} else res.sendRedirect(req.getContextPath() + "dashboard?error=no user found.");
 	}
-	private void update(HttpServletRequest req, HttpServletResponse res, WebContext ctx){
+	private void update(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		long userId = Long.parseLong(req.getParameter("id"));
+		String firstName = req.getParameter("firstName");
+		String secondName = req.getParameter("secondName");
+		String email = req.getParameter("email");
+		String password = req.getParameter("password");
+		String role = req.getParameter("role");
+		
+		if (userService.userExist(userId)) {
+			if ("Admin".equalsIgnoreCase(role)) {
+				String accessLevel = req.getParameter("accessLevel");
+				Admin admin = new Admin(userId, firstName, secondName, email, password, Integer.parseInt(accessLevel));
+				model = userService.update(admin);
+			} else if ("Client".equalsIgnoreCase(role)) {
+				String deliveryAddress = req.getParameter("deliveryAddress");				
+				String paymentMethod = req.getParameter("paymentMethod");
+				Client client = new Client(userId, firstName, secondName, email, password, deliveryAddress, paymentMethod);
+				model = userService.update(client);
+			} else {
+				model.setSuccess(false);
+				model.setMessage("invalid role, " + role);
+			}
+			res.sendRedirect(req.getContextPath() + "/dashboard?" + (model.successful() ? "success=" + model.message() : "error=" + model.message()));
+
+		} else res.sendRedirect(req.getContextPath() + "/dashboard?error=user not found.");
 
 	}
 }
