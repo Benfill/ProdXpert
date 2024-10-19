@@ -3,7 +3,6 @@ package repository.impl;
 import entity.Admin;
 import entity.Client;
 import entity.User;
-import enums.UserRole;
 import model.UserModel;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -27,16 +26,10 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public List<User> getAll() {
-        // Transaction transaction = null;
         List<User> users = null;
         try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-            // transaction = s.beginTransaction();
             users = s.createQuery("select u FROM User u", User.class).getResultList();
-            // transaction.commit();
         } catch (Exception e) {
-            // if (transaction != null) {
-            //     transaction.rollback();
-            // }
             e.printStackTrace();
         }
         return users;
@@ -64,14 +57,34 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public UserModel update(User user) { // primary update
-        model.setMessage("before operation");
+    public UserModel update(User user) {
         Transaction t = null;
 
         try(Session s = sessionFactory.openSession()){
             t = s.beginTransaction();
-            s.merge(user);
-            t.commit();
+            if (user instanceof Admin) {
+                Admin admin = s.get(Admin.class, user.getId());
+                Admin u = (Admin) user;
+                admin.setFirstName(u.getFirstName());
+                admin.setSecond_name(u.getSecondName());
+                admin.setEmail(u.getEmail());
+                if (u.getPassword() != null) admin.setPassword(u.getPassword());
+                admin.setAccessLevel(u.getAccessLevel());
+                s.update(admin);
+                t.commit();
+            } else if (user instanceof Client) {
+                Client client = s.get(Client.class, user.getId());
+                Client u = (Client) user;
+                client.setFirstName(u.getFirstName());
+                client.setSecond_name(u.getSecondName());
+                client.setEmail(u.getEmail());
+                if (u.getPassword() != null) client.setPassword(u.getPassword());
+                client.setDeliveryAddress(u.getDeliveryAddress());
+                client.setPaymentMethod(u.getPaymentMethod());
+                s.update(client);
+                t.commit();
+            }
+
             model.setSuccess(true);
             model.setMessage("User updated.");
         } catch(Exception e){
@@ -80,9 +93,8 @@ public class UserRepositoryImpl implements IUserRepository {
             }
             e.printStackTrace();
             model.setSuccess(false);
-            model.setMessage("Failed updating user.");
+            model.setMessage("Failed updating user.  " + e.getMessage());
         }
-        model.setMessage("after operation");
         return model;
     }
 

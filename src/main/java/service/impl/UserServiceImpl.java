@@ -15,7 +15,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAll(String filter) {
         return userRepository.getAll();
     }
 

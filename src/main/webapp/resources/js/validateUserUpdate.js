@@ -41,17 +41,6 @@ function validateUpdateUser(event, self) {
     }
 
 
-    if (password != null && password.length < 8) {
-        showError('update-password', 'Password must be at least 8 characters long.');
-        valid = false;
-    }
-
-    if (password != null && password !== confirmPassword) {
-        showError('update-confirm-password', 'Passwords do not match.');
-        valid = false;
-    }
-
-
 
     if(role.value.trim() == "Admin"){
         if(accessLevel === "" || accessLevel == 0){
@@ -72,18 +61,26 @@ function validateUpdateUser(event, self) {
         }
     }
 
+    if (password.length < 8) {
+        showError('update-password', 'Password must be at least 8 characters long.');
+        valid = false;
+    }
+
+    if (password !== confirmPassword) {
+        showError('update-confirm-password', 'Passwords do not match.');
+        valid = false;
+    }
 
     if (valid) {
         self.submit();
     }
 }
 
-// document.getElementById("helper-checkbox").addEventListener("change")
 
 function showError(inputId, message) {
     const inputElement = document.getElementById(inputId);
     const errorMessage = document.createElement('div');
-    errorMessage.className = 'error-message text-red-500 text-sm mt-1';
+    errorMessage.className = 'update-error-message text-red-500 text-sm mt-1';
     errorMessage.textContent = message;
     inputElement.insertAdjacentElement('afterend', errorMessage);
 }

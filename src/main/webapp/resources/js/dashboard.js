@@ -63,6 +63,7 @@ let udpateAdminInputs = document.querySelector(".updateRoleAdminInputs");
         udpateClientInputs.classList.remove("hidden");
         udpateAdminInputs.classList.add("hidden");
     }
+    document.getElementById("update-user-x-z-role").value = self.value;
 }
 
 function cleanUrl() {
@@ -82,11 +83,10 @@ window.onload = function() {
 };
 
 document.getElementById('helper-checkbox').checked = false;
-const setNewPwdInUpdate = (self) => {    
+const setNewPwdInUpdate = (self) => {
     let pwdDiv = document.getElementById("setNewPwd");
 
     if(self.checked && pwdDiv.classList.contains("hidden")){
         pwdDiv.classList.remove("hidden");
-    } else pwdDiv.classList.add("hidden");
-
+    } else pwdDiv.classList.add("hidden");    
 }
