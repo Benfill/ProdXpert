@@ -60,7 +60,7 @@
                         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                             <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                                 <div class="w-full md:w-1/2">
-                                    <form class="flex items-center">
+                                    <form action="dashboard" method="get" class="flex items-center">
                                         <label for="simple-search" class="sr-only">Search</label>
                                         <div class="relative w-full">
                                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -68,7 +68,7 @@
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <input type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+                                            <input th:value="${param.search}" type="text" name="search" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search user by name...">
                                         </div>
                                     </form>
                                 </div>
@@ -92,17 +92,18 @@
                                         </button>
                                         <div id="filterDropdown" class="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                             <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Role</h6>
-                                            <ul onchange="" class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
+                                            <form onsubmit="handleFilterByRole(this, event)" action="dashboard" method="get" class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
+                                                <input type="hidden" name="type" id="filter-by">
                                                 <li class="flex items-center">
-                                                    <input id="apple" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                                    <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Admin</label>
+                                                    <input id="filter-role-admin" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                    <label for="filter-role-admin" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Admin</label>
                                                 </li>
                                                 <li class="flex items-center">
-                                                    <input id="fitbit" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                                    <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Client</label>
+                                                    <input id="filter-role-client" type="checkbox" value="" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                    <label for="filter-role-admin" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Client</label>
                                                 </li>
-                                                
-                                            </ul>
+                                                <button id="filter-role-action">Filter</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

@@ -90,3 +90,17 @@ const setNewPwdInUpdate = (self) => {
         pwdDiv.classList.remove("hidden");
     } else pwdDiv.classList.add("hidden");    
 }
+
+let fAdmin = document.getElementById("filter-role-admin");
+let fClient = document.getElementById("filter-role-client");
+
+const handleFilterByRole = (self, event) => {
+    event.preventDefault();
+    let filterBy = document.getElementById("filter-by");
+
+    filterBy.value = ((fAdmin.checked && fClient.checked) || (!fAdmin.checked && !fClient.checked)) ? "all" : (fAdmin.checked ? "admin" : "client");
+
+    if (filterBy.value === "all") {
+        location.href = location.pathname;
+    } else self.submit();
+}

@@ -1,23 +1,21 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.OverridesAttribute;
 
-import org.apache.commons.io.IOExceptionList;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import entity.Admin;
 import entity.Client;
 import entity.User;
-import enums.UserRole;
 import model.UserModel;
 import service.impl.UserServiceImpl;
 import utils.PasswordUtil;
@@ -40,14 +38,22 @@ public class UserServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 		String path = req.getServletPath();
+		String filterBy = "all";
 
-		// if (!authAndHasAccess(req)) {
-		// 	templateEngine.process("404", ctx, res.getWriter());
-		// 	return;
-		// }
+		if (!authAndHasAccess(req)) {
+			templateEngine.process("404", ctx, res.getWriter());
+			return;
+		}
 
 		if ("/dashboard".equalsIgnoreCase(path)) {
-			ctx.setVariable("users", userService.getAll());
+			String isFilter = req.getParameter("type");
+			if(isFilter != null) filterBy = isFilter;
+			List<User> users = userService.getAll(filterBy);
+			String search = req.getParameter("search");
+			if (search != null && !search.isEmpty()) {
+				users = users.stream().filter(u -> (u.getFirstName() + " " + u.getSecondName()).contains(search)).collect(Collectors.toList());
+			}
+			ctx.setVariable("users", users);
 			templateEngine.process("dashboard/index", ctx, res.getWriter());
 		}
 	}
@@ -57,7 +63,7 @@ public class UserServlet extends HttpServlet {
 		String path = req.getServletPath();
         WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 
-		// if(authAndHasAccess(req)){
+		if(authAndHasAccess(req)){
 			if ("/dashboard/users/create".equals(path)) {
 				create(req, res, ctx);
 			} else if ("/dashboard/users/delete".equals(path)) {
@@ -65,7 +71,7 @@ public class UserServlet extends HttpServlet {
 			} else if ("/dashboard/users/update".equals(path)){
 				update(req, res);
 			}
-		// } else res.sendRedirect(req.getContentType() + "?error=access denied.");
+		} else res.sendRedirect(req.getContentType() + "?error=access denied.");
 	}
 	
     private boolean authAndHasAccess(HttpServletRequest req) { // check authentication

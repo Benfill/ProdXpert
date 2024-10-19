@@ -6,6 +6,7 @@ import repository.impl.UserRepositoryImpl;
 import service.IUserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl implements IUserService {
     private UserRepositoryImpl userRepository;
@@ -16,7 +17,15 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> getAll(String filter) {
-        return userRepository.getAll();
+        List<User> users = userRepository.getAll();
+        if (filter.equals("all")) {
+            return users;
+        } else if ("admin".equalsIgnoreCase(filter)) {
+            return users.stream().filter(u -> u.getType().equalsIgnoreCase("Admin")).collect(Collectors.toList());
+        } else if ("client".equalsIgnoreCase(filter)) {
+            return users.stream().filter(u -> u.getType().equalsIgnoreCase("Client")).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
