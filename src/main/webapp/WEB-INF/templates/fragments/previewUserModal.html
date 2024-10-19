@@ -6,8 +6,9 @@
             <!-- Modal header -->
             <div class="flex justify-between mb-4 rounded-t sm:mb-5">
                 <div class="text-lg text-gray-900 md:text-xl dark:text-white">
-                    <h3 id="read-user-first-name" class="font-semibold ">Apple iMac 27”</h3>
-                    <p id="read-user-second-name" class="font-bold">$2999</p>
+                    <h3 class="font-semibold text-gray-500 ">#ID <span id="preview-user-id"></span></h3>
+                    <p class="font-semibold text-sm text-gray-500">First Name: <span class="text-gray-800" id="preview-user-firstName"></span></p>
+                    <p class="font-semibold text-sm text-gray-500">Second Name: <span class="text-gray-800 " id="preview-user-secondName"></span></p>
                 </div>
                 <div>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="readProductModal">
@@ -19,11 +20,15 @@
                 </div>
             </div>
             <dl>
-                <dt id="read-user-email" class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Details</dt>
-                <dd id="read-user-delivery-address" class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Standard glass ,3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US.</dd>
-                <dd id="read-user-payment-method" class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Standard glass ,3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US.</dd>
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Access Level</dt>
-                <dd id="read-user-access-level" class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Electronics/PC</dd>
+                <dt class="mb-2 font-semibold text-sm hover:underline leading-none text-blue-700 dark:text-white">Email: <span id="preview-user-email"></span></dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Delivery Address: <span class="clear-me text-blue-500" id="preview-user-deliveryAddress"></span></dd>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Payment Method: <span class="clear-me text-blue-500" id="preview-user-paymentMethod"></span></dd>
+                <dt class="mb-2 font-semibold leading-none text-gray-700 dark:text-white">User Type: </dt>
+                <dd  class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"><span class="text-green-700" id="preview-user-type"></span></dd>
+                <dt class="mb-2 font-semibold leading-none text-gray-700 dark:text-white">Access Level</dt>
+                <dd  class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">Level <span class="clear-me text-blue-500" id="preview-user-accessLevel"></span></dd>
+                <dt class="mb-2 font-semibold leading-none text-gray-700 dark:text-white">Hashed Password</dt>
+                <dd  class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"><span class="text-xs" id="preview-user-password"></span></dd>
             </dl>
          
         </div>

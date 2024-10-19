@@ -137,7 +137,7 @@
                                             <td class="px-4 py-3 flex items-center justify-end">
                                                 <!-- Button for showing the menu -->
                                                 <button th:attr="data-clicked-user-id=${user.id}" class="inline-flex items-center text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 dark:hover-bg-gray-800 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
-                                                    type="button" onclick="toggleMenu(this); setModalUser(this);">
+                                                    type="button" onclick="toggleMenu(this);">
                                                     <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                                     </svg>
@@ -156,7 +156,7 @@
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button type="button" data-modal-target="readProductModal" data-modal-toggle="readProductModal" class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
+                                                            <button onclick="prepareViewUser(this);" th:attr="data-clicked-user-id=${user.id}" type="button" data-modal-target="readProductModal" data-modal-toggle="readProductModal" class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
                                                                 <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                                                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -239,6 +239,7 @@
     <div th:replace="~{fragments/createUserModal :: createUserModal}" ></div>
     <div th:replace="~{fragments/deleteUserModal :: deleteUserModal}" ></div>
     <div th:replace="~{fragments/previewUserModal :: previewUserModal}" ></div>
+    <div th:replace="~{fragments/updateUserModal :: updateUserModal}"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.8.1/alpine.js"></script>
     <script type="text/javascript" th:src="@{/resources/js/dashboard.js}"></script>
@@ -247,38 +248,20 @@
     <script th:inline="javascript">
         var users = [[${users}]];
 
-        const setModalUser = (self) => {
+        const prepareViewUser = (self) => {
             let userId = self.getAttribute("data-clicked-user-id");
 
             let user = users.filter(u => u.id == userId)[0];
-            
-            
-
-            const readFirstName = document.getElementById("read-user-first-name");
-            const readSecondName = document.getElementById("read-user-second-name");
-            const readEmail = document.getElementById("read-user-email");
-            const readDeliveryAddress = document.getElementById("read-user-delivery-address");
-            const readPaymentMethod = document.getElementById("read-user-payment-method");
-            const readAccessLevel = document.getElementById("read-user-access-level");
-
-            console.log(user);
-            console.log(user.email);
-            console.log(user['email']);
-            
+            let clears = document.querySelectorAll(".clear-me");
+            [...clears].map(c => {c.innerHTML = "null"});
             
 
-            readFirstName.innerHTML = user.firstName;
-            readSecondName.innerHTML = user.secondName;
-            readEmail.innerHTML = user.email;
-            readDeliveryAddress.innerHTML = user.deliveryAddress != null ? user.deliveryAddress : "";
-            readPaymentMethod.innerHTML = user.paymentMethod != null ? user.paymentMethod : "";
-            readAccessLevel.innerHTML = user.accessLevel != null ? user.accessLevel : "Client";
-            
-
+            for(let key in user){
+                let fillMe = document.getElementById(`preview-user-${key}`);
+                fillMe.innerHTML = user[key];
+            }
         }
     
-        
-        console.log(users);
     </script>
 
 

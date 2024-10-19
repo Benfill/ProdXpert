@@ -41,10 +41,10 @@ public class UserServlet extends HttpServlet {
 		WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 		String path = req.getServletPath();
 
-		if (!authAndHasAccess(req)) {
-			templateEngine.process("404", ctx, res.getWriter());
-			return;
-		}
+		// if (!authAndHasAccess(req)) {
+		// 	templateEngine.process("404", ctx, res.getWriter());
+		// 	return;
+		// }
 
 		if ("/dashboard".equalsIgnoreCase(path)) {
 			ctx.setVariable("users", userService.getAll());
@@ -57,7 +57,7 @@ public class UserServlet extends HttpServlet {
 		String path = req.getServletPath();
         WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 
-		if(authAndHasAccess(req)){
+		// if(authAndHasAccess(req)){
 			if ("/dashboard/users/create".equals(path)) {
 				create(req, res, ctx);
 			} else if ("/dashboard/users/delete".equals(path)) {
@@ -65,7 +65,7 @@ public class UserServlet extends HttpServlet {
 			} else if ("/dashboard/users/update".equals(ctx)){
 				update(req, res, ctx);
 			}
-		} else res.sendRedirect(req.getContentType() + "?error=access denied.");
+		// } else res.sendRedirect(req.getContentType() + "?error=access denied.");
 	}
 	
     private boolean authAndHasAccess(HttpServletRequest req) { // check authentication
