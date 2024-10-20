@@ -52,6 +52,8 @@ public class UserRepositoryImpl implements IUserRepository {
             e.printStackTrace();
             model.setSuccess(false);
             model.setMessage("Failed to create user.");
+        } finally {
+            s.close();
         }
         return model;
     }
@@ -62,29 +64,13 @@ public class UserRepositoryImpl implements IUserRepository {
 
         try(Session s = sessionFactory.openSession()){
             t = s.beginTransaction();
-            if (user instanceof Admin) {
-                Admin admin = s.get(Admin.class, user.getId());
-                Admin u = (Admin) user;
-                admin.setFirstName(u.getFirstName());
-                admin.setSecond_name(u.getSecondName());
-                admin.setEmail(u.getEmail());
-                if (u.getPassword() != null) admin.setPassword(u.getPassword());
-                admin.setAccessLevel(u.getAccessLevel());
-                s.update(admin);
-                t.commit();
-            } else if (user instanceof Client) {
-                Client client = s.get(Client.class, user.getId());
-                Client u = (Client) user;
-                client.setFirstName(u.getFirstName());
-                client.setSecond_name(u.getSecondName());
-                client.setEmail(u.getEmail());
-                if (u.getPassword() != null) client.setPassword(u.getPassword());
-                client.setDeliveryAddress(u.getDeliveryAddress());
-                client.setPaymentMethod(u.getPaymentMethod());
-                s.update(client);
-                t.commit();
-            }
-
+            User persistentUser = s.get(User.class, user.getId());
+            s.evict(persistentUser);
+            String tmpPwd = persistentUser.getPassword();  // tmp pwd helps if pwd is empty/null
+            persistentUser = user;
+            if (user.getPassword() == null || user.getPassword().isEmpty()) persistentUser.setPassword(tmpPwd);
+            s.merge(persistentUser);
+            t.commit();
             model.setSuccess(true);
             model.setMessage("User updated.");
         } catch(Exception e){
