@@ -111,23 +111,25 @@ public class OrderServlet extends HttpServlet {
 		OrderModel model = new OrderModel();
 		String length = "5";
 		String pageParam = request.getParameter("page");
+		String searchString = request.getParameter("search");
+
 
         if (pageParam == null)
 			pageParam = "1";
 
+        if (searchString == null) 
+            searchString="";
+
 		try {
-			orders = this.orderServiceImpl.allOrders(pageParam, length);
-            orders.forEach(o->{
-                logger.info("order title"+o.getId());
-            });
-			long total = this.orderServiceImpl.count();
+			orders = this.orderServiceImpl.allOrders(pageParam, length,searchString);
+         
+			long total = this.orderServiceImpl.count(searchString);
 			int totalPages = (int) Math.ceil((double) total / 5);
 
             logger.info("orders count"+total);
 
 
 			model.setOrders(orders);
-			model.setSuccessMessage("The products have been successfully retrieved");
 			model.setOrderTotal(total);
 			model.setPage(Integer.parseInt(pageParam));
 			model.setTotalPages(totalPages);

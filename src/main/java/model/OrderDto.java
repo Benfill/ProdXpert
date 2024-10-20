@@ -1,26 +1,28 @@
 package model;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+import enums.OrderStatus;
 
 public class OrderDto {
     private Long id;
     private String userName;
     private Double total;
-    private String status;
-    private Date dateOrder;
-    // Constructor
-    public OrderDto(Long id, String userName, Double total, String status, Date dateOrder) {
+    private String status; 
+    private Date dateOrder; 
+
+    public OrderDto(Long id, String userName, Double total, OrderStatus status, LocalDateTime dateCommande) {
         this.id = id;
         this.userName = userName;
         this.total = total;
-        this.status = status;
-        this.dateOrder = dateOrder;
+        this.status = status.toString(); 
+        this.dateOrder = Date.from(dateCommande.atZone(ZoneId.systemDefault()).toInstant()); 
     }
+    
 
-    // Default constructor
     public OrderDto() {}
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import entity.Order;
+import model.OrderDto;
 import repository.IOrderRepository;
 
 import java.util.List;
@@ -47,33 +48,61 @@ public class OrderRepositoryImpl implements IOrderRepository {
     }
 
 	@Override
-	public List<Order> getAllOrders(int page, int length) throws Exception {
-		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-			Query<Order> query = session.createQuery("FROM Order", Order.class);
-	
-			int offset = (page - 1) * length;
-			query.setFirstResult(offset);
-			query.setMaxResults(length);
-	
-			List<Order> orders = query.getResultList();
-			return orders;
-		} catch (Exception e) {
-			logger.error("Error fetching orders", e);
-			throw new Exception("Error fetching orders", e);
-		}
-	}
-	
+	public List<OrderDto> getAllOrders(int page, int length, String search) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
 
-    @Override
-    public long count() throws Exception {
-        sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
-		Query<Order> query = session.createQuery("FROM Order", Order.class);
-		long counter = query.getResultList().stream().count();
+		String hql = "SELECT new model.OrderDto(o.id, u.firstName, o.total, o.status, o.dateCommande) "
+		+ "FROM Order o LEFT JOIN o.user u";
+
+		if (search != null && !search.trim().isEmpty()) {
+			hql += " WHERE u.firstName LIKE :search";
+		}
+		Query<OrderDto> query = session.createQuery(hql, OrderDto.class);
+
+		// Set search parameter
+		if (search != null && !search.trim().isEmpty()) {
+			query.setParameter("search", "%" + search + "%");
+		}
+
+		// Set pagination
+		query.setFirstResult((page - 1) * length);
+		query.setMaxResults(length);
+
+		// Get the list of OrderDto
+		List<OrderDto> orders = query.getResultList();
+
+		session.getTransaction().commit();
 		session.close();
 
-		return counter;
-    }
+		return orders;
+	}
+
+
+
+	
+	@Override
+	public long count(String search) throws Exception {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+	
+		String hql = "SELECT COUNT(o) FROM Order o LEFT JOIN o.user u";
+
+		if (search != null && !search.trim().isEmpty()) {
+			hql += " WHERE u.firstName LIKE :search";
+		}
+	
+		Query<Long> query = session.createQuery(hql, Long.class);
+	
+		// Set search parameter if present
+		if (search != null && !search.trim().isEmpty()) {
+			query.setParameter("search", "%" + search + "%");
+		}
+	
+		long count = query.uniqueResult();
+		session.close();
+		return count;
+	}
+	
 
 	@Override
 	public void update(Order order) throws Exception {

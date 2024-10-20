@@ -36,7 +36,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public List<OrderDto> allOrders(String pageParam, String lengthParam) throws Exception {
+    public List<OrderDto> allOrders(String pageParam, String lengthParam,String search) throws Exception {
 
         if (pageParam == null || !((pageParam.matches("-?\\d+(\\.\\d+)?") && Integer.parseInt(pageParam) > 0))){
             logger.error("Page Param is null or not a valid number");
@@ -54,28 +54,15 @@ public class OrderServiceImpl implements IOrderService {
         int page = Integer.parseInt(pageParam);
 		int length = Integer.parseInt(lengthParam);
 
-        List<Order> orders = orderRepositoryImpl.getAllOrders(page, length);
-        orders.stream().forEach(o -> {
-            logger.info("service order " + o.getCity());
-        });
+        List<OrderDto> orders = orderRepositoryImpl.getAllOrders(page, length,search);
         
-        List<OrderDto> dto = orders.stream().map(o -> 
-            new OrderDto(
-                o.getId(),
-                o.getUSer().getFirstName(), 
-                o.getTotal(),
-                o.getStatus().toString(),
-                Date.from(o.getDateCommande().atZone(ZoneId.systemDefault()).toInstant())
-            )
-        ).collect(Collectors.toList());
-        
-        return dto;
+        return orders;
         
     }
 
     @Override
-	public long count() throws Exception {
-		return this.orderRepositoryImpl.count();
+	public long count(String search) throws Exception {
+		return this.orderRepositoryImpl.count(search);
 	}
 
     @Override

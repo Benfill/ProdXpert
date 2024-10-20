@@ -77,7 +77,9 @@
 								<div
 									class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
 									<div class="w-full md:w-1/2">
-										<form class="flex items-center" th:action="@{/}">
+										<form class="flex items-center" th:action="@{/order}" method="get">
+											<input type="hidden" name="action" value="admin" />
+											<input type="hidden" name="page" th:value="${model.page}" />
 											<label for="simple-search" class="sr-only">Search</label>
 											<div class="relative w-full">
 												<div
@@ -91,7 +93,7 @@
 															clip-rule="evenodd" />
                                 </svg>
 												</div>
-												<input type="text" id="simple-search" name="q"
+												<input type="text" id="simple-search" name="search"
 													class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
 													placeholder="Search" required>
 											</div>
@@ -121,7 +123,8 @@
 
 												<td class="px-6 py-4" th:text="${#dates.format(order.dateOrder, 'yyyy-MM-dd')}"></td>
 												<td class="px-6 py-4" th:text="'$' + ${#numbers.formatDecimal(order.total, 1, 'COMMA', 2, 'POINT')}"></td>
-												<td class="px-6 py-4" th:text="${order.status}"></td>
+                                                <td class="px-6 py-4" th:text="${order.status}"></td>
+
 												<td class="px-6 py-4 flex items-center justify-end">
 													<td class="px-4 py-3 flex items-center justify-end">
 														<!-- Dropdown Button -->
@@ -215,7 +218,7 @@
 												<option value="" disabled>Select Status</option>
 												
 												<option th:selected="${order.status == 'PENDING'}" th:value="PENDING">PENDING</option>
-												<option th:selected="${order.status == 'IN_PROGRESS'}" th:value="IN_PROGRESS">IN_PROGRESS</option>
+												 <option th:selected="${order.status == 'IN_PROGRESS'}" th:value="IN_PROGRESS">IN_PROGRESS</option>
 												<option th:selected="${order.status == 'SHIPPED'}" th:value="SHIPPED">SHIPPED</option>
 												<option th:selected="${order.status == 'DELIVERED'}" th:value="DELIVERED">DELIVERED</option>
 												<option th:selected="${order.status == 'CANCELED'}" th:value="CANCELED">CANCELED</option>
@@ -247,6 +250,8 @@
                                         </tbody>
 										
                                     </table>
+									<h2 th:if="${model.orders.isEmpty}" class="text-red-800 text-center">There is no data to display</h2>
+
                                 </div>
                                 
                               

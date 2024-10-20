@@ -7,7 +7,7 @@ import model.OrderDto;
 
 public interface IOrderService {
     public Boolean addOrder(Order order);
-    public List<OrderDto> allOrders(String pageParam, String length) throws Exception;
-    public long count() throws Exception;
+    public List<OrderDto> allOrders(String pageParam, String length,String search) throws Exception;
+    public long count(String search) throws Exception;
     public void updateStatus(Long id ,String status) throws Exception;
 }
