@@ -15,7 +15,10 @@
 
        
         <section class="bg-white py-8 antialiased  md:py-16">
-            <form th:action="@{/order(action='save')}" method="post" id="form" class="mx-auto max-w-screen-xl mt-20 px-4 2xl:px-0">
+
+         
+
+        <form th:action="@{/order(action='save')}" method="post" id="form" class="mx-auto max-w-screen-xl mt-20 px-4 2xl:px-0">
               <ol class="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
                 <li class="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
                   <span class="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
@@ -318,6 +321,18 @@
                     Order
                     </button>
                   </div>
+
+                  
+
+                  <div th:if="${successMessage}" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                    <span class="font-medium" th:text="${successMessage}"></span> 
+                  </div>
+
+                  <div th:if="${errorMessage}" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <span  th:text="${errorMessage}" class="font-medium"></span> 
+                  </div>
+            
+              
           
                 </div>
           
@@ -330,7 +345,7 @@
 
                       </dl>
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <input type="hidden" id="total" />
+                        <input type="hidden" id="total" name="total" />
                         <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
                         <dd class="text-base font-bold text-gray-900 dark:text-white total-cart"></dd>
                       </dl>

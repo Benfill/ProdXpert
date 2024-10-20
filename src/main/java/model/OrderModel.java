@@ -1,8 +1,10 @@
 package model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import entity.Order;
 import entity.User;
 
 public class OrderModel {
@@ -11,7 +13,46 @@ public class OrderModel {
     private Map<String, String> errors = new HashMap<>();
     private String successMessage;
     private String errorMessage;
+    private List<OrderDto> orders;
+    private Long orderTotal;
+    private int page;
+    private int totalPages;
 
+
+
+
+    public void setTotalPages(int totalPages)
+    {
+        this.totalPages = totalPages;
+    }
+    public int getTotalPages(){
+        return this.totalPages;
+    }
+
+
+    public void setPage(int page)
+    {
+        this.page = page;
+    }
+    public int getPage(){
+        return this.page;
+    }
+
+    public void setOrderTotal(Long orderTotal){
+        this.orderTotal = orderTotal;
+    }
+
+    public Long getOrderTotal(Long orderTotal){
+       return this.orderTotal ;
+    }
+
+    public void setOrders(List<OrderDto> orders){
+        this.orders = orders;
+    }
+
+    public List<OrderDto> getOrders(){
+        return this.orders;
+    }
 
     public String getErrorMessage(){
         return this.errorMessage;
