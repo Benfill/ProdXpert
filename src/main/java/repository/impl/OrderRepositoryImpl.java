@@ -33,16 +33,25 @@ public class OrderRepositoryImpl implements IOrderRepository {
     }
 
     @Override
-    public List<Order> getOrderByUserId(Long userId) throws Exception {
-        sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
-		Query<Order> query = session.createQuery("FROM Order", Order.class);
-        query.setParameter("userId", userId);
+    public List<OrderDto> getOrderByUserId(int page, int length,Long userId) throws Exception {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
 
-		
+		String hql = "SELECT new model.OrderDto(o.id, u.firstName, o.total, o.status, o.dateCommande) "
+		+ "FROM Order o LEFT JOIN o.user u  WHERE  u.id=:userId";
 
-		List<Order> orders = query.getResultList();
+		Query<OrderDto> query = session.createQuery(hql, OrderDto.class);
+
+		query.setParameter("userId", userId);
+
+		query.setFirstResult((page - 1) * length);
+		query.setMaxResults(length);
+
+		List<OrderDto> orders = query.getResultList();
+
+		session.getTransaction().commit();
 		session.close();
+
 		return orders;
 
     }
@@ -60,7 +69,6 @@ public class OrderRepositoryImpl implements IOrderRepository {
 		}
 		Query<OrderDto> query = session.createQuery(hql, OrderDto.class);
 
-		// Set search parameter
 		if (search != null && !search.trim().isEmpty()) {
 			query.setParameter("search", "%" + search + "%");
 		}
@@ -93,7 +101,6 @@ public class OrderRepositoryImpl implements IOrderRepository {
 	
 		Query<Long> query = session.createQuery(hql, Long.class);
 	
-		// Set search parameter if present
 		if (search != null && !search.trim().isEmpty()) {
 			query.setParameter("search", "%" + search + "%");
 		}
@@ -120,27 +127,38 @@ public class OrderRepositoryImpl implements IOrderRepository {
 	}
 
 	@Override
-public Order getOrderById(Long id) throws Exception {
-    Session session = HibernateUtil.getSessionFactory().openSession();
-    Order order = null;
-    
-    try {
-        session.beginTransaction();
-        
-        order = session.get(Order.class, id);
-        
-        session.getTransaction().commit();
-    } catch (Exception e) {
-        if (session.getTransaction() != null) {
-            session.getTransaction().rollback();
-        }
-        throw e; 
-    } finally {
-        session.close();
-    }
-    
-    return order; 
-}
+	public Order getOrderById(Long id) throws Exception {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Order order = null;
+		
+		try {
+			session.beginTransaction();
+			
+			order = session.get(Order.class, id);
+			
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			if (session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+			throw e; 
+		} finally {
+			session.close();
+		}
+		
+		return order; 
+	}
+
+	@Override
+	public void delete(Order order) throws Exception {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Order o = session.get(Order.class, order.getId());
+
+		session.beginTransaction();
+		session.delete(o);
+		session.getTransaction().commit();
+		session.close();
+	}
 
     
 }

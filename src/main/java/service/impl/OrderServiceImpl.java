@@ -79,6 +79,48 @@ public class OrderServiceImpl implements IOrderService {
         
     }
 
+    @Override
+    public void updateOrder(Order order) throws Exception {
+        if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.IN_PROGRESS) {
+            orderRepositoryImpl.save(order);
+        } else {
+            throw new Exception("Cannot update order. Status must be 'En attente' or 'En traitement'.");
+        }
+    }
+
+    @Override
+    public void deleteOrder(Order order) throws Exception {
+        if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.IN_PROGRESS) {
+            orderRepositoryImpl.delete(order);
+        } else {
+            throw new Exception("Cannot delete order. Status must be 'En attente' or 'En traitement'.");
+        }
+    }
+
+    @Override
+    public List<OrderDto> myOrders(String pageParam, String lengthParam, Long id) throws Exception {
+
+       if (pageParam == null || !((pageParam.matches("-?\\d+(\\.\\d+)?") && Integer.parseInt(pageParam) > 0))){
+            logger.error("Page Param is null or not a valid number");
+            throw new Exception("Page Param is null or not a valid number");
+        }
+
+        else if (lengthParam == null
+                || !((lengthParam.matches("-?\\d+(\\.\\d+)?") && Integer.parseInt(lengthParam) > 0)))
+        {
+            logger.error("Length Param is null or not a valid number");
+            throw new Exception("Length Param is null or not a valid number");
+
+        }
+
+        int page = Integer.parseInt(pageParam);
+		int length = Integer.parseInt(lengthParam);
+
+        List<OrderDto> orders = orderRepositoryImpl.getOrderByUserId(page, length,id);
+        
+        return orders;
+    }
+
    
 
 

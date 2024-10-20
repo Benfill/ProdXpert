@@ -10,4 +10,8 @@ public interface IOrderService {
     public List<OrderDto> allOrders(String pageParam, String length,String search) throws Exception;
     public long count(String search) throws Exception;
     public void updateStatus(Long id ,String status) throws Exception;
+    public void updateOrder(Order order) throws Exception ;
+    public void deleteOrder(Order order) throws Exception ;
+    public List<OrderDto> myOrders(String pageParam, String lengthParam,Long id) throws Exception;
+
 }

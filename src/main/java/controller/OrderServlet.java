@@ -80,6 +80,8 @@ public class OrderServlet extends HttpServlet {
                             admin(request,response);
                         }else if("checkout".equalsIgnoreCase(action)){
                           checkout(request,response);                     
+                        }else if("myorders".equalsIgnoreCase(action)){
+                            myOrders(request,response);
                         }
                     }
                     else {
@@ -103,10 +105,10 @@ public class OrderServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8"); 
         WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
 
-        // if (!authAndHasAccess(request)) {
-		// 	templateEngine.process("404", context, response.getWriter());
-		// 	return;
-		// }
+        if (!authAndHasAccess(request)) {
+			templateEngine.process("404", context, response.getWriter());
+			return;
+		}
         List<OrderDto> orders = null;
 		OrderModel model = new OrderModel();
 		String length = "5";
@@ -143,6 +145,49 @@ public class OrderServlet extends HttpServlet {
     }
 
 
+    protected void myOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("authUser");
+
+        List<OrderDto> orders = null;
+		OrderModel model = new OrderModel();
+		String length = "5";
+		String pageParam = request.getParameter("page");
+
+
+        if (pageParam == null)
+			pageParam = "1";
+
+        try {
+            if (session != null && loggedInUser != null) {
+                orders = this.orderServiceImpl.myOrders(pageParam, length ,loggedInUser.getId());
+         
+                long total = orders.size();
+                int totalPages = (int) Math.ceil((double) total / 5);
+
+                logger.info("orders count"+total);
+
+
+                model.setOrders(orders);
+                model.setOrderTotal(total);
+                model.setPage(Integer.parseInt(pageParam));
+                model.setTotalPages(totalPages);
+
+                context.setVariable("model",model);
+                templateEngine.process("pages/order/myorders", context, response.getWriter());
+            }else{
+                templateEngine.process("auth/login", context, response.getWriter());
+            }
+        } catch (Exception e) {
+            logger.info("Internal Server Error"+e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }     
+
+
+    }
    
 
     protected void checkout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -173,9 +218,12 @@ public class OrderServlet extends HttpServlet {
            Save(request,response);
 		} else if ("update".equalsIgnoreCase(action)) {
             update(request,response);
-		} else if ("delete".equalsIgnoreCase(action)) {
+		} else if ("updateMyOrder".equalsIgnoreCase(action)) {
+            updateMyOrder(request,response);
 		}
     }
+
+
 
     protected void Save(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
@@ -253,15 +301,51 @@ public class OrderServlet extends HttpServlet {
 
     }
 
+    // update order details for client
+
+    protected void updateMyOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+        OrderModel model=null;
+
+       
+
+        // String id = request.getParameter("order_id");
+        // String 
+        // String status = request.getParameter("status");
+
+       
+
+        try {
+            this.orderServiceImpl.updateOrder(null);
+			model.setSuccessMessage("Order status changed successfully");
+
+
+
+        } catch (NumberFormatException e) {
+            logger.error("cant parse  order id string", e);            
+            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error in update order", e);            
+        }
+
+		response.sendRedirect(request.getContextPath() + "/order?action=admin&page=1");
+
+
+    }
+
+
+
+    // update status for admin
     protected void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8"); 
         WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
         OrderModel model=null;
 
-        // if (!authAndHasAccess(request)) {
-		// 	templateEngine.process("404", context, response.getWriter());
-		// 	return;
-		// }
+        if (!authAndHasAccess(request)) {
+			templateEngine.process("404", context, response.getWriter());
+			return;
+		}
 
         String id = request.getParameter("order_id");
         String status = request.getParameter("status");
