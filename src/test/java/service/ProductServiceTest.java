@@ -1,6 +1,7 @@
 package service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -64,6 +66,38 @@ public class ProductServiceTest {
 		assertEquals("product 2", result.get(1).getName());
 
 		verify(repository).searchByName("product", 0, 5);
+	}
+
+	@Test
+	public void countTest() throws Exception {
+		long mockCount = 3;
+		when(repository.count()).thenReturn(mockCount);
+
+		long result = service.count();
+		assertEquals(3, result);
+	}
+
+	@Test
+	public void createProductTest() throws Exception {
+		String name = "Product 1";
+		String description = "product description";
+		String price = "199";
+		String stock = "1000";
+		String picturePath = "images/picture1";
+
+		service.createProduct(name, description, price, stock, picturePath);
+
+		ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+
+		verify(repository, times(1)).insert(productCaptor.capture());
+
+		Product captoredProduct = productCaptor.getValue();
+
+		assertEquals(name, captoredProduct.getName());
+		assertEquals(description, captoredProduct.getDescription());
+		assertEquals(Double.parseDouble(price), captoredProduct.getPrice());
+		assertEquals(Integer.parseInt(stock), captoredProduct.getStock());
+		assertEquals(picturePath, captoredProduct.getPicturePath());
 	}
 
 }
