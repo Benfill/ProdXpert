@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface IUserRepository {
     User findByEmail(String username);
-    User findById(int id);
+    User findById(Long id);
     List<User> getAll();
     UserModel save(User user);
-    void update(User user);
-    void delete(User user);
+    UserModel update(User user);
+    UserModel delete(User user);
 }

@@ -6,6 +6,7 @@ import repository.impl.UserRepositoryImpl;
 import service.IUserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl implements IUserService {
     private UserRepositoryImpl userRepository;
@@ -15,8 +16,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.getAll();
+    public List<User> getAll(String filter) {
+        List<User> users = userRepository.getAll();
+        if (filter.equals("all")) {
+            return users;
+        } else if ("admin".equalsIgnoreCase(filter)) {
+            return users.stream().filter(u -> u.getType().equalsIgnoreCase("Admin")).collect(Collectors.toList());
+        } else if ("client".equalsIgnoreCase(filter)) {
+            return users.stream().filter(u -> u.getType().equalsIgnoreCase("Client")).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -38,12 +47,33 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public boolean userExist(Long id){
+        return findById(id) != null;
+    }
+
+    @Override
+    public User findById(Long id){
+        return userRepository.findById(id);
+    }
+
+    @Override
     public UserModel create(User user) {
         return userRepository.save(user);
     }
 
     @Override
+    public UserModel delete(Long id){
+        User user = findById(id);
+        return userRepository.delete(user);
+    }
+
+    @Override
     public boolean isFirst(){
         return userRepository.getAll().isEmpty();
+    }
+
+    @Override
+    public UserModel update(User user){
+        return userRepository.update(user);
     }
 }

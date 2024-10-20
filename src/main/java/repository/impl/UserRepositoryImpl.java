@@ -3,7 +3,6 @@ package repository.impl;
 import entity.Admin;
 import entity.Client;
 import entity.User;
-import enums.UserRole;
 import model.UserModel;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import utils.HibernateUtil;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 public class UserRepositoryImpl implements IUserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private final SessionFactory sessionFactory;
@@ -28,16 +26,10 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public List<User> getAll() {
-        // Transaction transaction = null;
         List<User> users = null;
         try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-            // transaction = s.beginTransaction();
             users = s.createQuery("select u FROM User u", User.class).getResultList();
-            // transaction.commit();
         } catch (Exception e) {
-            // if (transaction != null) {
-            //     transaction.rollback();
-            // }
             e.printStackTrace();
         }
         return users;
@@ -60,18 +52,57 @@ public class UserRepositoryImpl implements IUserRepository {
             e.printStackTrace();
             model.setSuccess(false);
             model.setMessage("Failed to create user.");
+        } finally {
+            s.close();
         }
         return model;
     }
 
     @Override
-    public void update(User user) {
+    public UserModel update(User user) {
+        Transaction t = null;
 
+        try(Session s = sessionFactory.openSession()){
+            t = s.beginTransaction();
+            User persistentUser = s.get(User.class, user.getId());
+            s.evict(persistentUser);
+            String tmpPwd = persistentUser.getPassword();  // tmp pwd helps if pwd is empty/null
+            persistentUser = user;
+            if (user.getPassword() == null || user.getPassword().isEmpty()) persistentUser.setPassword(tmpPwd);
+            s.merge(persistentUser);
+            t.commit();
+            model.setSuccess(true);
+            model.setMessage("User updated.");
+        } catch(Exception e){
+            if (t != null) {
+                t.rollback();
+            }
+            e.printStackTrace();
+            model.setSuccess(false);
+            model.setMessage("Failed updating user.  " + e.getMessage());
+        }
+        return model;
     }
 
     @Override
-    public void delete(User user) {
-
+    public UserModel delete(User user) {
+        Transaction t = null;
+        try(Session s = sessionFactory.openSession()){
+            if (userAccess(user) > 1) { // can delete only client or sub admin (access 2 or 3)
+                t = s.beginTransaction();
+                s.delete(user);
+                t.commit();
+                model.setSuccess(true);
+                model.setMessage("User deleted.");
+            } else {
+                model.setSuccess(false); model.setMessage("Cannot delete super admin.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.setSuccess(false);
+            model.setMessage("Failed deleting user.");
+        }
+        return model;
     }
 
     @Override
@@ -82,21 +113,17 @@ public class UserRepositoryImpl implements IUserRepository {
             user = s.createQuery("from User where email = :email", User.class)
                     .setParameter("email", email)
                     .uniqueResult();
-                    logger.error("the EMAIL to SEARCH with : " + email);
-                    logger.error("the user FOUND : ", user);
-                    logger.error("the user FIRST NAME : ", user.getFirstName());
                     
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("ERROR FINDING USER : ", e);
+
         }
-    
         return user;
     }
     
 
     @Override
-    public User findById(int id) {
+    public User findById(Long id) {
         Transaction t = null;
         User user = null;
         try(Session s = sessionFactory.openSession()) {
@@ -112,5 +139,13 @@ public class UserRepositoryImpl implements IUserRepository {
         return user;
     }
 
+    private int userAccess(User user) {
+        int access = 3; // client
+        if (user instanceof Admin) {
+            Admin admin = (Admin) user;
+            access = admin.getAccessLevel();
+        }
+        return access;
+    }
 
 }

@@ -6,7 +6,6 @@ const setup = () => {
     }
 
 
-let clickedUserId;
 const hInput = document.getElementById("delete-user-id");
 
 
@@ -14,7 +13,7 @@ const toggleMenu = (self) => {
     event.stopPropagation(); // stop even from bubbling
 
     let userId = self.getAttribute("data-clicked-user-id");
-    clickedUserId = userId;
+    hInput.value = userId;
 
     let menu = document.getElementById(`clicked-user-id-menu-${userId}`);
 
@@ -35,17 +34,73 @@ document.addEventListener('click', function(event) {
 
 // chnage input based on role
 
-const role = document.getAnimations("role");
-let clientInputs = document.getElementById("roleClientInputs");
-let adminInputs = document.getElementById("roleAdminInputs");
+
 
 const changeOnRoleInput = (self) => {
-    if (self.value == "ADMIN"){
+    let clientInputs = document.querySelector(".roleClientInputs");
+let adminInputs = document.querySelector(".roleAdminInputs");
+
+    if (self.value == "Admin"){
         clientInputs.classList.add("hidden");
-        adminInputs.classList.remove("hidden")
-    } else {
+        adminInputs.classList.remove("hidden");
+    } else if (self.value == "Client") {        
         clientInputs.classList.remove("hidden");
         adminInputs.classList.add("hidden");
     }
-    // if (self === "CLIENT")
+}
+
+
+
+
+const udpateChangeOnRoleInput = (self) => {
+    let udpateClientInputs = document.querySelector(".updateRoleClientInputs");
+let udpateAdminInputs = document.querySelector(".updateRoleAdminInputs");
+
+    if (self.value == "Admin"){
+        udpateClientInputs.classList.add("hidden");
+        udpateAdminInputs.classList.remove("hidden");
+    } else if (self.value == "Client") {        
+        udpateClientInputs.classList.remove("hidden");
+        udpateAdminInputs.classList.add("hidden");
+    }
+    document.getElementById("update-user-x-z-role").value = self.value;
+}
+
+function cleanUrl() {
+    history.replaceState(null, '', window.location.pathname);
+    let error = document.getElementById("error");
+    let success = document.getElementById("success");
+    if (error) {
+        error.className = "hidden";
+    }
+    if(success){
+        success.className = "hidden";
+    }
+}
+
+window.onload = function() {
+    setTimeout(cleanUrl, 6000);
+};
+
+document.getElementById('helper-checkbox').checked = false;
+const setNewPwdInUpdate = (self) => {
+    let pwdDiv = document.getElementById("setNewPwd");
+
+    if(self.checked && pwdDiv.classList.contains("hidden")){
+        pwdDiv.classList.remove("hidden");
+    } else pwdDiv.classList.add("hidden");    
+}
+
+let fAdmin = document.getElementById("filter-role-admin");
+let fClient = document.getElementById("filter-role-client");
+
+const handleFilterByRole = (self, event) => {
+    event.preventDefault();
+    let filterBy = document.getElementById("filter-by");
+
+    filterBy.value = ((fAdmin.checked && fClient.checked) || (!fAdmin.checked && !fClient.checked)) ? "all" : (fAdmin.checked ? "admin" : "client");
+
+    if (filterBy.value === "all") {
+        location.href = location.pathname;
+    } else self.submit();
 }

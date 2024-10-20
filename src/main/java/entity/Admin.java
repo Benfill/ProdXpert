@@ -15,7 +15,10 @@ public class Admin extends User {
         super(fName, sName, email, pwd);
         this.accessLevel = accessLevel;
     }
-
+    public Admin(Long id, String fName, String sName, String email, String pwd, int accessLevel) {
+        super(id, fName, sName, email, pwd);
+        this.accessLevel = accessLevel;
+    }
     public void setAccessLevel(int accessLevel){ this.accessLevel = accessLevel; }
     public int getAccessLevel(){ return this.accessLevel; }
 }

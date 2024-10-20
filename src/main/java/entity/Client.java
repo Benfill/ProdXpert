@@ -18,6 +18,12 @@ public class Client extends User {
         this.deliveryAddress = deliveryAddress;
         this.paymentMethod = paymentMethod;
     }
+    public Client(Long id, String fName, String sName, String email, String pwd, String deliveryAddress, String paymentMethod) {
+        super(id, fName, sName, email, pwd);
+        this.deliveryAddress = deliveryAddress;
+        this.paymentMethod = paymentMethod;
+    }
+
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
 
