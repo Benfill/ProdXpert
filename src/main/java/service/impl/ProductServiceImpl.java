@@ -12,6 +12,14 @@ public class ProductServiceImpl implements IProductService {
 
 	private ProductRepositoryImpl productRepositoryImpl;
 
+	public ProductServiceImpl() {
+		productRepositoryImpl = new ProductRepositoryImpl();
+	}
+
+	public ProductServiceImpl(ProductRepositoryImpl repository) {
+		this.productRepositoryImpl = repository;
+	}
+
 	@Override
 	public List<ProductDto> getAllProducts(String pageParam, String lengthParam) throws Exception {
 		if (pageParam == null || !((pageParam.matches("-?\\d+(\\.\\d+)?") && Integer.parseInt(pageParam) > 0)))
@@ -23,7 +31,6 @@ public class ProductServiceImpl implements IProductService {
 		int page = Integer.parseInt(pageParam);
 		int length = Integer.parseInt(lengthParam);
 
-		productRepositoryImpl = new ProductRepositoryImpl();
 		List<ProductDto> dtos = new ArrayList<ProductDto>();
 
 		int offset = (page - 1) * length;
@@ -109,7 +116,6 @@ public class ProductServiceImpl implements IProductService {
 		int page = Integer.parseInt(pageParam);
 		int length = Integer.parseInt(lengthParam);
 
-		productRepositoryImpl = new ProductRepositoryImpl();
 		List<ProductDto> dtos = new ArrayList<ProductDto>();
 
 		int offset = (page - 1) * length;
