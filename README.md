@@ -1,5 +1,10 @@
 # ProdXpert - Online Order Management Application
 
+![prodXpert-10-20-2024_02_24_PM](https://github.com/user-attachments/assets/a19ab163-4765-4466-8f48-3d4fe19e68e3)
+![localhost-8080-prodXpert-product-admin-10-20-2024_02_25_PM](https://github.com/user-attachments/assets/886102a4-7978-4a5b-954a-1b8e5fe467cf)
+![Product-Details-10-20-2024_02_25_PM](https://github.com/user-attachments/assets/90290c45-0da0-4aa2-9a84-226ba24069f1)
+
+
 ## Overview
 
 ProdXpert is a powerful and secure web application designed to elevate your business's online order management. It provides a seamless experience for both customers and administrators, making the process of managing products, users, and orders more efficient and accessible. With a modern user interface powered by Thymeleaf and robust role-based authentication, ProdXpert ensures that businesses can handle their online operations with ease and confidence.
