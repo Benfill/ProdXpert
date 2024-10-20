@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
 		String path = req.getServletPath();
 		String filterBy = "all";
 
-		if (!authAndHasAccess(req)) {
+		if (!authAndHasAccess(req, false)) {
 			templateEngine.process("404", ctx, res.getWriter());
 			return;
 		}
@@ -63,21 +63,30 @@ public class UserServlet extends HttpServlet {
 		String path = req.getServletPath();
         WebContext ctx = new WebContext(req, res, getServletContext(), req.getLocale());
 
-		if(authAndHasAccess(req)){
+		if(authAndHasAccess(req, false)){
 			if ("/dashboard/users/create".equals(path)) {
 				create(req, res, ctx);
 			} else if ("/dashboard/users/delete".equals(path)) {
-				delete(req, res, ctx);
+				if (authAndHasAccess(req, true)) {
+					delete(req, res, ctx);
+				} else res.sendRedirect(req.getContextPath() + "/dashboard?error=Access denied, you don't have permission for this aciton.");
 			} else if ("/dashboard/users/update".equals(path)){
-				update(req, res);
+				if (authAndHasAccess(req, true)) {
+					update(req, res);
+				} else res.sendRedirect(req.getContextPath() + "/dashboard?error=Access denied, you don't have permission for this aciton.");
 			}
-		} else res.sendRedirect(req.getContentType() + "?error=access denied.");
+			
+		} else res.sendRedirect(req.getContextPath() + "?error=Access denied, not admin/authentified.");
 	}
 	
-    private boolean authAndHasAccess(HttpServletRequest req) { // check authentication
+    private boolean authAndHasAccess(HttpServletRequest req, boolean hasToBeSuperAdmin) { // check authentication
         HttpSession session = req.getSession();
 		User user = (User) session.getAttribute("authUser");
-        return session != null &&  user != null && user instanceof Admin;
+        boolean authNAccess = session != null &&  user != null && user instanceof Admin;
+		if (hasToBeSuperAdmin) {
+			Admin admin = (Admin) user;
+			return authNAccess && admin.getAccessLevel() == 1;
+		} else return authNAccess;
     }
 
 	private void create(HttpServletRequest req, HttpServletResponse res, WebContext ctx) throws ServletException, IOException {
@@ -121,12 +130,12 @@ public class UserServlet extends HttpServlet {
 		if (userService.userExist(userId)) {
 			if ("Admin".equalsIgnoreCase(role)) {
 				String accessLevel = req.getParameter("accessLevel");
-				Admin admin = new Admin(userId, firstName, secondName, email, password, Integer.parseInt(accessLevel));
+				Admin admin = new Admin(userId, firstName, secondName, email, PasswordUtil.hashPassword(password), Integer.parseInt(accessLevel));
 				model = userService.update(admin);
 			} else if ("Client".equalsIgnoreCase(role)) {
 				String deliveryAddress = req.getParameter("deliveryAddress");				
 				String paymentMethod = req.getParameter("paymentMethod");
-				Client client = new Client(userId, firstName, secondName, email, password, deliveryAddress, paymentMethod);
+				Client client = new Client(userId, firstName, secondName, email, PasswordUtil.hashPassword(password), deliveryAddress, paymentMethod);
 				model = userService.update(client);
 			} else {
 				model.setSuccess(false);

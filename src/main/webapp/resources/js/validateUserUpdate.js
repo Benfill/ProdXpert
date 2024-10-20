@@ -8,9 +8,11 @@ function validateUpdateUser(event, self) {
     const deliveryAddress = document.getElementById('update-delivery-address').value.trim();
     const paymentMethod = document.getElementById('update-payment-method').value.trim();
     const accessLevel = document.getElementById('update-access-level').value.trim();
-    const password = document.getElementById('update-password');
-    const confirmPassword = document.getElementById('update-confirm-password');
+    let password = document.getElementById('update-password');
+    let confirmPassword = document.getElementById('update-confirm-password');
     const role = document.getElementById('update-role');
+
+    let setPwd = document.getElementById("helper-checkbox");
 
     if(password != null && confirmPassword != null){
         password = password.value.trim();
@@ -61,14 +63,19 @@ function validateUpdateUser(event, self) {
         }
     }
 
-    if (password.length < 8) {
-        showError('update-password', 'Password must be at least 8 characters long.');
-        valid = false;
-    }
-
-    if (password !== confirmPassword) {
-        showError('update-confirm-password', 'Passwords do not match.');
-        valid = false;
+    if(setPwd.checked){
+        if (password.length < 8) {
+            showError('update-password', 'Password must be at least 8 characters long.');
+            valid = false;
+        }
+    
+        if (password !== confirmPassword) {
+            showError('update-confirm-password', 'Passwords do not match.');
+            valid = false;
+        }
+    } else {
+        password.value = "";
+        confirmPassword.value = "";
     }
 
     if (valid) {

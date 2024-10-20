@@ -26,8 +26,8 @@
           <div class="z-10 flex flex-col flex-1">
             <div class="flex items-center justify-between flex-shrink-0 w-64 p-4">
               <!-- Logo -->
-              <a href="#">
-                <span class="sr-only">K-UI</span>
+              <a href="">
+                <span class="sr-only"></span>
                 <svg
                   aria-hidden="true"
                   class="w-16 h-auto text-blue-600"
@@ -57,6 +57,13 @@
                 <span class="sr-only">Close sidebar</span>
               </button>
             </div>
+            <!-- user info -->
+            <div class="ml-4">
+              <p th:text="'Welcome back `' + ${#session.getAttribute('authUser').firstName} + '` !'" class="text-gray-700 text-sm"></p>
+              <p th:text="${#session.getAttribute('authUser').email}" class="text-gray-700 text-sm text-blue-600 hover:underline"></p>
+              <p th:text="${#session.getAttribute('authUser').type}" class="text-gray-700 text-sm text-green-700"></p>
+            </div>
+            <!-- navs -->
             <div class="flex flex-col flex-1">
               <nav class="w-64 p-4 mt-4">
                 <a href="/prodXpert/" class="flex items-center space-x-2">
