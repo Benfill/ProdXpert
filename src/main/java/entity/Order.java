@@ -53,6 +53,7 @@ public class Order {
         this.status = status;
         this.user = user;
         this.total = total;
+        
     }
 
     public Long getId() {

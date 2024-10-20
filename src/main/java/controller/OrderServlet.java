@@ -23,10 +23,14 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import entity.Admin;
 import entity.Order;
 import entity.User;
 import enums.OrderStatus;
+import model.OrderDto;
 import model.OrderModel;
+import model.ProductDto;
+import model.ProductModel;
 import repository.impl.OrderRepositoryImpl;
 import service.impl.OrderServiceImpl;
 
@@ -53,22 +57,19 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User loggedInUser = (User) session.getAttribute("authUser");
+      
         
            try {
             String action = request.getParameter("action");
               // Create the Thymeleaf context
-
-
             response.setContentType("text/html;charset=UTF-8");
             WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
 
+          
+
               // Check if 'action' is null or empty
                 if (action == null || action.isEmpty()) {
-                    // Handle empty or missing action
-                    response.getWriter().write("Action parameter is missing or empty");
-                    return;
+                    templateEngine.process("pages/404", context, response.getWriter());
                 }else{
                     String regex = "^[a-zA-Z]+$";
                     Pattern pattern = Pattern.compile(regex);
@@ -76,48 +77,11 @@ public class OrderServlet extends HttpServlet {
     
                     if (matcher.matches()) {
                         if ("admin".equalsIgnoreCase(action)) {  
-                            List<Map<String, Object>> products = new ArrayList<>();
-                    
-                            // Define product 1
-                            Map<String, Object> product1 = new HashMap<>();
-                            product1.put("id", 1L);
-                            product1.put("name", "Smartphone XYZ");
-                            product1.put("description", "A high-end smartphone with excellent features.");
-                            product1.put("imageUrl", "/resources/images/smartphone_xyz.jpg");
-                            product1.put("category", "Electronics");
-                            product1.put("price", "$799");
-                            products.add(product1);
-                    
-                            // Define product 2
-                            Map<String, Object> product2 = new HashMap<>();
-                            product2.put("id", 2L);
-                            product2.put("name", "Wireless Headphones");
-                            product2.put("description", "Noise-cancelling over-ear wireless headphones.");
-                            product2.put("imageUrl", "/resources/images/wireless_headphones.jpg");
-                            product2.put("category", "Accessories");
-                            product2.put("price", "$199");
-                            products.add(product2);
-                    
-                            try {
-                                context.setVariable("title", "Products");
-                                context.setVariable("products", products);
-                            
-                                templateEngine.process("pages/index", context, response.getWriter());
-                            } catch (Exception e) {
-                                e.printStackTrace(); 
-                                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
-                            }
+                            admin(request,response);
                         }else if("checkout".equalsIgnoreCase(action)){
-                            try {
-                                if (session != null && loggedInUser != null) {
-                                    templateEngine.process("pages/order/checkout", context, response.getWriter());
-                                }else{
-                                    templateEngine.process("auth/login", context, response.getWriter());
-                                }
-                            } catch (Exception e) {
-                                logger.info("Internal Server Error"+e);
-                                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
-                            }                          
+                          checkout(request,response);                     
+                        }else if("myorders".equalsIgnoreCase(action)){
+                            myOrders(request,response);
                         }
                     }
                     else {
@@ -137,6 +101,114 @@ public class OrderServlet extends HttpServlet {
     }
 
 
+    protected void admin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        if (!authAndHasAccess(request)) {
+			templateEngine.process("404", context, response.getWriter());
+			return;
+		}
+        List<OrderDto> orders = null;
+		OrderModel model = new OrderModel();
+		String length = "5";
+		String pageParam = request.getParameter("page");
+		String searchString = request.getParameter("search");
+
+
+        if (pageParam == null)
+			pageParam = "1";
+
+        if (searchString == null) 
+            searchString="";
+
+		try {
+			orders = this.orderServiceImpl.allOrders(pageParam, length,searchString);
+         
+			long total = this.orderServiceImpl.count(searchString);
+			int totalPages = (int) Math.ceil((double) total / 5);
+
+            logger.info("orders count"+total);
+
+
+			model.setOrders(orders);
+			model.setOrderTotal(total);
+			model.setPage(Integer.parseInt(pageParam));
+			model.setTotalPages(totalPages);
+
+            context.setVariable("model",model);
+            templateEngine.process("pages/order/index", context, response.getWriter());
+		} catch (Exception e) {
+            logger.error("Error in admin get method", e);
+            model.setErrorMessage(e.getMessage());
+		}
+    }
+
+
+    protected void myOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("authUser");
+
+        List<OrderDto> orders = null;
+		OrderModel model = new OrderModel();
+		String length = "5";
+		String pageParam = request.getParameter("page");
+
+
+        if (pageParam == null)
+			pageParam = "1";
+
+        try {
+            if (session != null && loggedInUser != null) {
+                orders = this.orderServiceImpl.myOrders(pageParam, length ,loggedInUser.getId());
+         
+                long total = orders.size();
+                int totalPages = (int) Math.ceil((double) total / 5);
+
+                logger.info("orders count"+total);
+
+
+                model.setOrders(orders);
+                model.setOrderTotal(total);
+                model.setPage(Integer.parseInt(pageParam));
+                model.setTotalPages(totalPages);
+
+                context.setVariable("model",model);
+                templateEngine.process("pages/order/myorders", context, response.getWriter());
+            }else{
+                templateEngine.process("auth/login", context, response.getWriter());
+            }
+        } catch (Exception e) {
+            logger.info("Internal Server Error"+e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }     
+
+
+    }
+   
+
+    protected void checkout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("authUser");
+
+        try {
+            if (session != null && loggedInUser != null) {
+                templateEngine.process("pages/order/checkout", context, response.getWriter());
+            }else{
+                templateEngine.process("auth/login", context, response.getWriter());
+            }
+        } catch (Exception e) {
+            logger.info("Internal Server Error"+e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }     
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -145,9 +217,13 @@ public class OrderServlet extends HttpServlet {
         if ("save".equalsIgnoreCase(action)) {
            Save(request,response);
 		} else if ("update".equalsIgnoreCase(action)) {
-		} else if ("delete".equalsIgnoreCase(action)) {
+            update(request,response);
+		} else if ("updateMyOrder".equalsIgnoreCase(action)) {
+            updateMyOrder(request,response);
 		}
     }
+
+
 
     protected void Save(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
@@ -157,6 +233,12 @@ public class OrderServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String totalString = request.getParameter("total");
         HttpSession session = request.getSession(false); 
+
+        logger.info("city" + city);
+        logger.info("address" + address);
+        logger.info("phone" + phone);
+        logger.info("totalString" + totalString);
+
     
         if (session == null || session.getAttribute("authUser") == null) {
             response.sendRedirect("login"); 
@@ -206,18 +288,92 @@ public class OrderServlet extends HttpServlet {
         }
         
         // After adding order
-        // Boolean inserted = this.orderServiceImpl.addOrder(newOrder);
-        // if (inserted) {
-        //     model.setSuccessMessage("Saved");
-        // } else {
-        //     model.setErrorMessage("Error occurred while inserting the article");
-        // }
+        Boolean inserted = this.orderServiceImpl.addOrder(newOrder);
+        if (inserted) {
+            context.setVariable("successMessage", "Order has been successfully saved.");
+        } else {
+            context.setVariable("errorMessage", "Error occurred while inserting the order.");
+        }
         
 
         // session.setAttribute("model", model);
         templateEngine.process("pages/order/checkout", context, response.getWriter());
 
     }
-    
+
+    // update order details for client
+
+    protected void updateMyOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+        OrderModel model=null;
+
+       
+
+        // String id = request.getParameter("order_id");
+        // String 
+        // String status = request.getParameter("status");
+
+       
+
+        try {
+            this.orderServiceImpl.updateOrder(null);
+			model.setSuccessMessage("Order status changed successfully");
+
+
+
+        } catch (NumberFormatException e) {
+            logger.error("cant parse  order id string", e);            
+            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error in update order", e);            
+        }
+
+		response.sendRedirect(request.getContextPath() + "/order?action=admin&page=1");
+
+
+    }
+
+
+
+    // update status for admin
+    protected void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8"); 
+        WebContext context = new WebContext(request, response, getServletContext(), request.getLocale());
+        OrderModel model=null;
+
+        if (!authAndHasAccess(request)) {
+			templateEngine.process("404", context, response.getWriter());
+			return;
+		}
+
+        String id = request.getParameter("order_id");
+        String status = request.getParameter("status");
+
+       
+
+        try {
+            this.orderServiceImpl.updateStatus(Long.parseLong(id), status);
+			model.setSuccessMessage("Order status changed successfully");
+
+
+
+        } catch (NumberFormatException e) {
+            logger.error("cant parse  order id string", e);            
+            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error in update order", e);            
+        }
+
+		response.sendRedirect(request.getContextPath() + "/order?action=admin&page=1");
+
+
+    }
+
+     private static boolean authAndHasAccess(HttpServletRequest req) { 
+        HttpSession session = req.getSession();
+		User user = (User) session.getAttribute("authUser");
+        return session != null &&  user != null && user instanceof Admin;
+    }
     
 }
