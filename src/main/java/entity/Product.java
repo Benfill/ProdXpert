@@ -13,19 +13,19 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "description")
+	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "price")
+	@Column(name = "price", nullable = false)
 	private double price;
 
-	@Column(name = "stock")
+	@Column(name = "stock", nullable = false)
 	private int stock;
 
-	@Column(name = "picture_path")
+	@Column(name = "picture_path", nullable = false)
 	private String picturePath;
 
 	public Product() {
