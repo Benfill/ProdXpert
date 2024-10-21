@@ -15,6 +15,10 @@ public class UserServiceImpl implements IUserService {
         userRepository = new UserRepositoryImpl();
     }
 
+    public UserServiceImpl(UserRepositoryImpl ur){
+        userRepository = ur;
+    }
+
     @Override
     public List<User> getAll(String filter) {
         List<User> users = userRepository.getAll();
